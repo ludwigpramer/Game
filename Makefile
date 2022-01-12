@@ -1,7 +1,7 @@
 CC= clang++
 FRAMEWORKS= -framework Cocoa -framework OpenGL -framework IOKit
 CFLAGS= -std=c++17
-DEBUGCFLAGS= -Wall -D Debug -g
+DEBUGCFLAGS= -Wall -D DEBUG -g
 LIBS= -lglfw3 -lGLEW
 OUTPUT= bin/app
 WINOUT= bin/win64App.exe

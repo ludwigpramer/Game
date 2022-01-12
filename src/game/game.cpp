@@ -8,11 +8,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#ifdef DEBUG
-#include <unistd.h>
-#include <stdio.h>
-#include <limits.h>
-#endif
+#include <vector>
+#include <array>
 
 #include "game.hpp"
 
@@ -28,6 +25,13 @@
 
 #define LOG
 
+#ifdef DEBUG
+#define lg printf("Log Point%d\n", i); i++
+int i = 0;
+#else
+#define lg
+#endif
+
 //the globally used variables
 GLFWwindow* window;
 
@@ -36,15 +40,24 @@ FILE* logFile;
 GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path);
 
 void GenVao(GLuint* id);
-int InitAll(GLFWwindow* w, FILE* log);
+int InitAll();
+void loadBuffers(
+    GLuint* vertexbuffer,
+    GLuint* uvbuffer,
+    GLuint* normalbuffer,
+    GLuint* elementbuffer,
+    std::vector<unsigned short> indices,
+    std::vector<glm::vec3> indexed_vertices,
+    std::vector<glm::vec2> indexed_uvs,
+    std::vector<glm::vec3> indexed_normals);
+
+
 
     
 
 int Game(void)
 { 
     int error = 0;
-
-
 
     GLuint ProgramID;
 
@@ -55,7 +68,6 @@ int Game(void)
     GLuint Texture;
 
     GLuint vertexbuffer;
-    GLuint colorbuffer;
     GLuint uvbuffer;
     GLuint normalbuffer;
     GLuint elementbuffer;
@@ -64,20 +76,16 @@ int Game(void)
     GLuint ViewMatrixID;
     GLuint ModelMatrixID;
 
-    error = InitAll(window, logFile);
+    error = InitAll();
 
     if(error != 0)
     {
         return error;
     }
     
-
-
     //Generate Vao
     GenVao(&VertexArrayID);
     
-    
-
     ProgramID = LoadShaders("src/renderingHead/Shaders/ShadingVertexShader.vs", "src/renderingHead/Shaders/ShadingFragmentShader.fs");
 
 
@@ -87,9 +95,10 @@ int Game(void)
     ViewMatrixID = glGetUniformLocation(ProgramID, "V");
     ModelMatrixID = glGetUniformLocation(ProgramID, "M");
 
-
+    
     Texture = loadDDS("assets/uvmap.DDS"); //loadDDS("imgs/uvmap.DDS");
 
+    
     //read .obj file
     std::vector<glm::vec3> vertices;
     std::vector<glm::vec2> uvs;
@@ -100,7 +109,7 @@ int Game(void)
         fprintf(stderr, "Error: Failed to load mesh.\n");
         return error;
     }
-
+    
     //VBO indexing
     std::vector<unsigned short> indices;
     std::vector<glm::vec3> indexed_vertices;
@@ -108,36 +117,21 @@ int Game(void)
     std::vector<glm::vec3> indexed_normals;
     indexVBO(vertices, uvs, normals, indexed_vertices, indexed_uvs, indexed_normals, indices);
 
-
+    
 
     // Get a handle for  "myTextureSampler" uniform
 	TextureID  = glGetUniformLocation(ProgramID, "myTextureSampler");
-
+    
     //Make and load the buffers
-
-    glGenBuffers(1, &uvbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-
-    glGenBuffers(1, &vertexbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-    
-    glGenBuffers(1, &normalbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
-
-    glGenBuffers(1, &elementbuffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-
     
 
-    // glGenBuffers(1, &colorbuffer);
-    // glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
 
- 
-    glBufferData(GL_ARRAY_BUFFER, indexed_uvs.size() * sizeof(glm::vec2), &indexed_uvs[0], GL_STATIC_DRAW);
-    glBufferData(GL_ARRAY_BUFFER, indexed_vertices.size() * sizeof(glm::vec3), &indexed_vertices[0], GL_STATIC_DRAW);
-    glBufferData(GL_ARRAY_BUFFER, indexed_normals.size() * sizeof(glm::vec3), &indexed_vertices[0], GL_STATIC_DRAW);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
-    
+
+    GLuint colorbuffer;  
+    glGenBuffers(1, &colorbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
+
     LightID = glGetUniformLocation(ProgramID, "LightPosition_worldspace");
     
     double lastTime;
@@ -146,6 +140,15 @@ int Game(void)
     frames = 0;
     do
     {
+        loadBuffers(
+        &vertexbuffer,
+        &uvbuffer,
+        &normalbuffer,
+        &elementbuffer,
+        indices,
+        indexed_vertices,
+        indexed_uvs,
+        indexed_normals);
         double currentTime;
         currentTime = glfwGetTime();
         frames++;
@@ -158,19 +161,23 @@ int Game(void)
 
 
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
         computeMatricesFromInputs();
+        
 	    // Camera matrix
         glm::mat4 ProjectionMatrix = getProjectionMatrix();
 	    glm::mat4 ViewMatrix  = getViewMatrix();
 
+        
 	    //Use the shaders
         glUseProgram(ProgramID);
-
+        
         glm::vec3 lightPos = glm::vec3(4, 4, 4);
         glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.y);
         //bind the contant matrix
         glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
-
+        
+        
         ////render first object////
 	   
 
@@ -188,7 +195,7 @@ int Game(void)
 		//Set "myTextureSampler" sampler to use Texture Unit 0
 		glUniform1i(TextureID, 0);
 
-
+        
         //vertexBuffer
         glEnableVertexAttribArray(0);
         glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -201,7 +208,7 @@ int Game(void)
            (void*)0            // array buffer offset
         );
        
-
+        
         //2nd attribute buffer: textures 
         glEnableVertexAttribArray(1);
         glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
@@ -214,7 +221,7 @@ int Game(void)
         (void*)0                          // array buffer offset
         );
 
-
+        
         //3rd attribute buffer: normals
         glEnableVertexAttribArray(2);
         glBindBuffer(GL_ARRAY_BUFFER, normalbuffer);
@@ -226,14 +233,13 @@ int Game(void)
             0,        //stride
             (void*) 0 //offset
         );
-
+        
         //Indexbuffer
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
-
-
+        
         //draw the triangles
-        glDrawElements( GL_TRIANGLES, indices.size(), GL_UNSIGNED_SHORT, (void*)0);
-
+        glDrawElements( GL_TRIANGLES, (GLsizei) indices.size(), GL_UNSIGNED_SHORT, (void*)0);
+        
         ////render second////
        
         glm::mat4 ModelMatrix2 = glm::mat4(1.0f);
@@ -293,9 +299,8 @@ int Game(void)
         //Indexbuffer
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
 
-
         //draw the triangles
-        glDrawElements( GL_TRIANGLES, indices.size(), GL_UNSIGNED_SHORT, (void*)0);
+        glDrawElements( GL_TRIANGLES, (GLsizei) indices.size(), GL_UNSIGNED_SHORT, 0);
 
         
         //diable the buffers
@@ -330,7 +335,7 @@ void GenVao(GLuint* id)
     glBindVertexArray(*id);
 }
 
-int InitAll(GLFWwindow* w, FILE* log)
+int InitAll()
 {
     if( !glfwInit() )
     {
@@ -345,16 +350,16 @@ int InitAll(GLFWwindow* w, FILE* log)
 
 
     
-    w = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, NULL, NULL);
+    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, NULL, NULL);
 
-    if( w == NULL)
+    if( window == NULL)
     {
         fprintf( stderr, "Error: Failed to open GLFW window.\n");
         glfwTerminate();
         return -1;
     }
     
-    glfwMakeContextCurrent(w); //Initialize glew
+    glfwMakeContextCurrent(window); //Initialize glew
     glewExperimental = true;
     
     if(glewInit() != GLEW_OK)
@@ -364,10 +369,10 @@ int InitAll(GLFWwindow* w, FILE* log)
     }
     
 
-    glfwSetInputMode(w, GLFW_STICKY_KEYS, GL_TRUE);
+    glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
 
     glfwPollEvents();
-    glfwSetCursorPos(w, WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
+    glfwSetCursorPos(window, WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
 
     glClearColor(0.0f, 1.0f, 1.0f, 0.9f);
     //enable depth test
@@ -379,8 +384,8 @@ int InitAll(GLFWwindow* w, FILE* log)
 
 
 
-    log = fopen("log/log.LOG", LOG_FILE_MODE);
-    if(log == NULL)
+    logFile = fopen("log/log.LOG", LOG_FILE_MODE);
+    if(logFile == NULL)
     {
         fprintf(stderr, "Error: Failed to open LogFile.\n");
         return -1;
@@ -388,4 +393,35 @@ int InitAll(GLFWwindow* w, FILE* log)
 
     return 0;
 }  
+
+void loadBuffers(
+    GLuint* vertexbuffer,
+    GLuint* uvbuffer,
+    GLuint* normalbuffer,
+    GLuint* elementbuffer,
+    std::vector<unsigned short> indices,
+    std::vector<glm::vec3> indexed_vertices,
+    std::vector<glm::vec2> indexed_uvs,
+    std::vector<glm::vec3> indexed_normals)
+    {
+       glGenBuffers(1, uvbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, *uvbuffer);
+    glBufferData(GL_ARRAY_BUFFER, indexed_uvs.size() * sizeof(glm::vec2), &indexed_uvs[0], GL_STATIC_DRAW);
+
+
+    glGenBuffers(1, vertexbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, *vertexbuffer);
+    glBufferData(GL_ARRAY_BUFFER, indexed_vertices.size() * sizeof(glm::vec3), &indexed_vertices[0], GL_STATIC_DRAW);
+    
+
+    glGenBuffers(1, normalbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, *normalbuffer);
+    glBufferData(GL_ARRAY_BUFFER, indexed_normals.size() * sizeof(glm::vec3), &indexed_vertices[0], GL_STATIC_DRAW);
+
+
+
+    glGenBuffers(1, elementbuffer);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *elementbuffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW); 
+    }
 
