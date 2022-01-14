@@ -45,7 +45,9 @@ public:
      std::vector<glm::vec2> indexed_uvs;
      std::vector<glm::vec3> indexed_normals;
 public:
+     Model();
      Model(const char* texturepath, const char* objpath);
+     Model(const char* texturepath, const char* objpath, glm::vec3 position);
      void setPos(glm::vec3 position);
      ~Model();
 };

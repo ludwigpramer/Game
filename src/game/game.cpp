@@ -24,6 +24,9 @@
 
 #include "head/controls.hpp"
 #include "head/model.hpp"
+#include "head/scene.hpp"
+#include "head/collider/collider.hpp"
+#include "head/gun/gun.hpp"
 
 #define LOG
 
@@ -33,6 +36,9 @@ int i = 0;
 #else
 #define lg
 #endif
+
+//The input arguments
+extern const char* args;
 
 //the globally used variables
 GLFWwindow* window; //The window
@@ -54,6 +60,7 @@ void loadBuffers(
     std::vector<glm::vec3> indexed_vertices,
     std::vector<glm::vec2> indexed_uvs,
     std::vector<glm::vec3> indexed_normals);
+void renderScene(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix);
 int render(Model model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix);
 
 static GLuint vertexbuffer;
@@ -69,12 +76,14 @@ static GLuint MatrixID;
 static GLuint ViewMatrixID;
 static GLuint ModelMatrixID;
 
+Player player = Player();
+
+Scene scene = Scene(player);
+
 int Game(void)
-{ 
-
+{
+    
     GLuint program;
-
-
 
     error = InitAll();
 
@@ -87,7 +96,7 @@ int Game(void)
     GenVao(&VertexArrayID);
     
     program = LoadShaders("src/renderingHead/Shaders/ShadingVertexShader.vs", "src/renderingHead/Shaders/ShadingFragmentShader.fs");
-
+    
 
 
     // Get a handle for  "MVP" uniform
@@ -95,8 +104,19 @@ int Game(void)
     ViewMatrixID = glGetUniformLocation(program, "V");
     ModelMatrixID = glGetUniformLocation(program, "M");
 
+
+    
     //Make model
     Model monkey("assets/uvmap.DDS", "assets/suzanne.obj");
+    scene.add(monkey);
+    error = loadDDS("assets/uvmap.DDS", &monkey.Texture); //loadDDS("imgs/uvmap.DDS");
+
+    if(error != 0)
+    {
+        fprintf(stderr, "Failed to load Texture in game file: %d\n", error);
+        return -1;
+    }
+
     // monkey.setPos(glm::vec3(1.0f));
     
     // //read .obj file
@@ -121,6 +141,7 @@ int Game(void)
 
     // Get a handle for  "myTextureSampler" uniform
 	TextureID  = glGetUniformLocation(program, "myTextureSampler");
+    
  
 
     //Will later be removed
@@ -168,15 +189,14 @@ int Game(void)
         //bind the contant matrix
         glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
         
-        render(monkey, ProjectionMatrix, ViewMatrix);
 
         
-        //diable the buffers
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glDisableVertexAttribArray(2);
-
-
+        //render(monkey, ProjectionMatrix, ViewMatrix);
+        renderScene(ProjectionMatrix, ViewMatrix);
+        if(error != 0)
+        {
+            fprintf(stderr, "Error: Failed in the rendering Method: ErrorCode %d\n", error);
+        }
 
         //Update Display
         glfwSwapBuffers(window);
@@ -367,6 +387,19 @@ inline int render(Model model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
         
     //draw the triangles
     glDrawElements( GL_TRIANGLES, (GLsizei) model.indices.size(), GL_UNSIGNED_SHORT, (void*)0);
-        
+    //diable the buffers
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
+
     return 0;
+}
+
+inline void renderScene(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
+{
+
+    for(Model m : scene.contents)
+    {
+        error = render(m, ProjectionMatrix, ViewMatrix);
+    }
 }

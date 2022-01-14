@@ -1,5 +1,11 @@
 #include "model.hpp"
 
+Model::Model()
+{
+     position = glm::vec3(0.0f);
+     ModelMatrix = glm::mat4(1.0f);
+}
+
 Model::Model(const char* texturepath, const char* objpath)
 {
              

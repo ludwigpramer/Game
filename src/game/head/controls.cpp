@@ -158,3 +158,7 @@ glm::mat4 getViewMatrix()
 {
      return ViewMatrix;
 }
+glm::vec3 getPostion()
+{
+     return position;
+}
