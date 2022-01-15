@@ -17,6 +17,7 @@ class Enemy
      glm::vec3 position;
      glm::vec3 direction;
      public:
+     void update();
      Enemy();
      Enemy(glm::vec3 position, glm::vec3 direction);
      ~Enemy();

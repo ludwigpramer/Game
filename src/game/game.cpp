@@ -376,4 +376,5 @@ inline void renderScene(Scene* scene)
     {
         error = render(e.model, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
     }
+    error = render(scene->player.gun.model, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
 }

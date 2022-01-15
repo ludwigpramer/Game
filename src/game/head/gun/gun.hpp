@@ -9,9 +9,8 @@
 
 #include "../../../constants.hpp"
 
-
-
 #include "../model.hpp"
+#include "../controls.hpp"
 
 class Gun
 {    
@@ -23,7 +22,6 @@ class Gun
      Gun();
      Gun(glm::vec3 position);
      ~Gun();
-     private:
      void update();
 };
 

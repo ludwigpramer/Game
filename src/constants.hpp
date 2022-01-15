@@ -24,11 +24,17 @@
 #define MOUSE_SPEED 0.005f
 #define MOUSE_BOUND 0
 
+//define the Path contants
+#define GUN_TEXTURE_PATH "assets/uvmap.DDS"
+#define GUN_OBJ_PATH "assets/gun.obj"
+
 //define the GameConstants
 #define CAMERA_STARTING_POS glm::vec3(0, 0, 5)
 #define PLAYER_STARTING_POS CAMERA_STARTING_POS
 #define CAMERA_STARTING_DIRECTION glm::vec3(0, 0, 1)
 #define PLAYER_STARTING_DIRECTION CAMERA_STARTING_DIRECTION
+
+
 
 
 //define the logging and LoggingControll constants

@@ -23,7 +23,9 @@ extra: $(MAIN) $(DEPENDENCIES)
 
 
 test: macos
+	./bin/app
 	
+extratest: extra
 	./bin/app
 
 cleanup:

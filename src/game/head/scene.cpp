@@ -5,6 +5,18 @@ void Scene::add(Model model)
      contents.push_back(model);
 }
 
+void Scene::update()
+{
+
+     player.update();
+
+     for(Enemy e : enemies)
+     {
+          e.update();
+     }
+     
+}
+
 Scene::Scene()
 {
      //default contructor

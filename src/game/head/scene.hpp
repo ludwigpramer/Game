@@ -24,6 +24,7 @@ class Scene
 
      public:
      void add(Model model);
+     void update();
      Scene();
      Scene(Player player);
      Scene(std::vector<Model> contents, Player player);

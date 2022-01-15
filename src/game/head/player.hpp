@@ -38,7 +38,10 @@ class Player
      Player();
      int collideWithSight(Model model);
      int collideWith(Model model);
+     void update();
      ~Player();
+     private:
+     glm::vec3 getGunPosition();
 
 };
 
