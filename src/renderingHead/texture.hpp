@@ -14,7 +14,7 @@
 GLuint loadBMP(const char * imagepath);
 
 //Load .DDS file
-GLuint loadDDS(const char * imagepath);
+int loadDDS(const char * imagepath, GLuint* Texture);
 
 
 #endif

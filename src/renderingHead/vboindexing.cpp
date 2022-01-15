@@ -7,7 +7,7 @@ int getSimilarVertexIndex(glm::vec3 &in_vertex, glm::vec2 &in_uc, glm::vec3 &in_
 
 void indexVBO(std::vector<glm::vec3> &in_vertices, std::vector<glm::vec2> &in_uvs, std::vector<glm::vec3> &in_normals, std::vector<glm::vec3> &out_vertices, std::vector<glm::vec2> &out_uvs, std::vector<glm::vec3> &out_normals, std::vector<unsigned short> &out_indices)
 {
-     for(int i = 0; i < in_vertices.size(); i++)
+     for(int i = 0; i < (int) in_vertices.size(); i++)
      {
           unsigned short index;
           int found = getSimilarVertexIndex(in_vertices[i], in_uvs[i], in_normals[i], out_vertices, out_uvs, out_normals, index);
@@ -31,7 +31,7 @@ int isNear(float v1, float v2)
 }
 int getSimilarVertexIndex(glm::vec3 &in_vertex, glm::vec2 &in_uv, glm::vec3 &in_normal, std::vector<glm::vec3> &out_vertices, std::vector<glm::vec2> &out_uvs, std::vector<glm::vec3> &out_normals, unsigned short &result)
 {
-     for(int i = 0; i<out_vertices.size(); i++)
+     for(int i = 0; i < (int) out_vertices.size(); i++)
      {
           if(
                isNear(in_vertex.x, out_vertices[i].x) &&

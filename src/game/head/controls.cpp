@@ -11,9 +11,12 @@ void logVec3(const char* name, glm::vec3 l)
 
 
 glm::mat4 ViewMatrix;
+
 glm::mat4 ProjectionMatrix;
 
-glm::vec3 position(0, 0, 5);
+glm::vec3 position = CAMERA_STARTING_POS;
+
+glm::vec3 direction;
 
 int mouseBound = MOUSE_BOUND;
 
@@ -50,7 +53,7 @@ void computeMatricesFromInputs()
      //printf("%d\n", horizontalAngle);
      }
      //direction vector
-	glm::vec3 direction(
+	direction = glm::vec3(
 		cos(verticalAngle) * sin(horizontalAngle), 
 		sin(verticalAngle),
 		cos(verticalAngle) * cos(horizontalAngle)
@@ -157,4 +160,12 @@ glm::mat4 getProjectionMatrix()
 glm::mat4 getViewMatrix()
 {
      return ViewMatrix;
+}
+glm::vec3 getPostionVector()
+{
+     return position;
+}
+glm::vec3 getDirectionVector()
+{
+     return direction;
 }
