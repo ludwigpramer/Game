@@ -1,5 +1,9 @@
 #include "enemy.hpp"
 
+void Enemy::update()
+{
+     this->model.position = position;
+}
 Enemy::Enemy()
 {
      //default contructor

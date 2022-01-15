@@ -26,5 +26,6 @@ glm::vec3 getPositionVector();
 
 glm::vec3 getDirectionVector();
 
+glm::vec3 getUpVector();
 
 #endif

@@ -18,6 +18,8 @@ glm::vec3 position = CAMERA_STARTING_POS;
 
 glm::vec3 direction;
 
+glm::vec3 up;
+
 int mouseBound = MOUSE_BOUND;
 
 float horizontalAngle = 90.0f;
@@ -67,7 +69,7 @@ void computeMatricesFromInputs()
           cos(horizontalAngle - 3.14f/2.0f)
      );
 
-     glm::vec3 up = glm::cross(right, direction);
+     up = glm::cross(right, direction);
      //move forward
      if (glfwGetKey(window, GLFW_KEY_W ) == GLFW_PRESS)
      {
@@ -168,4 +170,8 @@ glm::vec3 getPositionVector()
 glm::vec3 getDirectionVector()
 {
      return direction;
+}
+glm::vec3 getUpVector()
+{
+     return up;
 }

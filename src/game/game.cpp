@@ -365,7 +365,6 @@ inline int render(Model model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 
 inline void renderScene(Scene* scene)
 {
-    scene->player.camera.update();
     glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &scene->player.camera.ViewMatrix[0][0]);
 
     for(Model m : scene->contents)

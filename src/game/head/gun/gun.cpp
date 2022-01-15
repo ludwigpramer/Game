@@ -12,10 +12,6 @@ Gun::Gun( glm::vec3 position)
      this->model.position = position;
      
 }
-void Gun::update()
-{
-     this->model.position = position;
-}
 
 Gun::~Gun()
 {
@@ -25,4 +21,5 @@ Gun::~Gun()
 void Gun::update()
 {
      position = getPositionVector() + glm::vec3();
+     this->model.position = position;
 }
