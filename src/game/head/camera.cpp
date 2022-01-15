@@ -2,20 +2,17 @@
 
 Camera::Camera()
 {
-
-}
-Camera::Camera(glm::vec3 position)
-{
-     this->position = position;
-
+     //default constructor
 }
 void Camera::update()
 {
      computeMatricesFromInputs();
      this->ProjectionMatrix = getProjectionMatrix();
      this->ViewMatrix = getViewMatrix();
+     this->position = getPositionVector();
+     this->direction = getDirectionVector();
 }
 Camera::~Camera()
 {
-
+     //destructor
 }

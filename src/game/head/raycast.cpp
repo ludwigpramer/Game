@@ -9,3 +9,7 @@ Ray::Ray(glm::vec3 origin, glm::vec3 direciton)
      this->origin = origin;
      this->direction = direciton;
 }
+Ray::~Ray()
+{
+     //decontructor
+}

@@ -15,6 +15,8 @@
 #include "../../constants.hpp"
 #include "camera.hpp"
 #include "gun/gun.hpp"
+#include "raycast.hpp"
+#include "collider/collider.hpp"
 
 
 extern GLFWwindow* window;
@@ -26,11 +28,16 @@ class Player
 {
      public:
      glm::vec3 position;
+     glm::vec3 direction;
      Camera camera;
      Gun gun;
+     Ray sight;
+     SimpleBoxCollider collider;
 
      public:
      Player();
+     int collideWithSight(Model model);
+     int collideWith(Model model);
      Player(glm::vec3 position);
      ~Player();
 

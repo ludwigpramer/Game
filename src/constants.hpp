@@ -24,6 +24,9 @@
 #define MOUSE_SPEED 0.005f
 #define MOUSE_BOUND 0
 
+//define the GameConstants
+#define CAMERA_STARTING_POS glm::vec3(0, 0, 5)
+
 
 //define the logging and LoggingControll constants
 #ifdef DEBUG

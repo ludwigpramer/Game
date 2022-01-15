@@ -1,5 +1,13 @@
 #include "player.hpp"
 
+int Player::collideWith(Model model)
+{
+     
+}
+int Player::collideWithSight(Model m)
+{
+
+}
 Player::Player()
 {
 
