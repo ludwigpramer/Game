@@ -1,14 +1,7 @@
 
-<h1 align="center">&lt; My Opengl Testing Project</h1>
+<h1 align="center"> My Opengl Testing Project</h1>
 
 
-<!-- Status -->
-
-<!-- <h4 align="center"> 
-	🚧  &lt;G 🚀 Under construction...  🚧
-</h4> 
-
-<hr> -->
 
 <p align="center">
   <a href="#dart-about">About</a> &#xa0; | &#xa0; 
@@ -26,17 +19,13 @@
 
 Describe your project
 
-## :sparkles: Features ##
-
-:heavy_check_mark: Feature 1;\
-:heavy_check_mark: Feature 2;\
-:heavy_check_mark: Feature 3;
-
 ## :rocket: Technologies ##
 
 The following tools were used in this project:
 
 - [OpenGL] www.opengl.org
+- [GLFW] www.glfw.org
+- [GLEW] www.glew.sourceforge.net
 
 ## :white_check_mark: Requirements ##
 
@@ -46,13 +35,16 @@ Before starting :checkered_flag:, you need to have [Git](https://git-scm.com), [
 
 ```bash
 # Clone this project
-$ git clone https://github.com/{Coolertyo4}/&lt;g
+$ git clone https://github.com/Coolertyo4/Game
 
 #build
 $ make
 
 #run
-$ ./app
+$ ./bin/app
+
+#or
+$ make test
 
 ```
 
