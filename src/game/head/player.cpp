@@ -2,25 +2,21 @@
 
 int Player::collideWith(Model model)
 {
-     
+     return 0;
 }
-int Player::collideWithSight(Model m)
+int Player::collideWithSight(Model model)
 {
-
+     
+     return 0;
 }
 Player::Player()
 {
 
-     this->position = glm::vec3(0.0f);
+     this->position = PLAYER_STARTING_POS;
      this->camera.position = position;
      this->gun = Gun(position + glm::normalize(camera.direction) + 2.0f);
 }
-Player::Player(glm::vec3 position)
-{
-     this->position = position;
-     this->camera.position = position;
-     this->gun = Gun(position + glm::normalize(camera.direction) + 2.0f);
-}
+
 Player::~Player()
 {
 

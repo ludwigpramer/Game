@@ -38,10 +38,10 @@ int i = 0;
 #endif
 
 //The input arguments
-extern const char* args;
+extern const char** args;
 
 //the globally used variables
-GLFWwindow* window; //The window
+GLFWwindow* window; //The windowobject
 
 FILE* logFile; //The log file
 
@@ -60,7 +60,8 @@ void loadBuffers(
     std::vector<glm::vec3> indexed_vertices,
     std::vector<glm::vec2> indexed_uvs,
     std::vector<glm::vec3> indexed_normals);
-void renderScene(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix);
+    
+void renderScene();
 int render(Model model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix);
 
 static GLuint vertexbuffer;
@@ -76,9 +77,7 @@ static GLuint MatrixID;
 static GLuint ViewMatrixID;
 static GLuint ModelMatrixID;
 
-Player player = Player();
 
-Scene scene = Scene(player);
 
 int Game(void)
 {
@@ -98,7 +97,6 @@ int Game(void)
     program = LoadShaders("src/renderingHead/Shaders/ShadingVertexShader.vs", "src/renderingHead/Shaders/ShadingFragmentShader.fs");
     
 
-
     // Get a handle for  "MVP" uniform
 	MatrixID = glGetUniformLocation(program, "MVP");
     ViewMatrixID = glGetUniformLocation(program, "V");
@@ -107,37 +105,17 @@ int Game(void)
 
     
     //Make model
+    Player player;
+    Scene scene = Scene(player);
     Model monkey("assets/uvmap.DDS", "assets/suzanne.obj");
     scene.add(monkey);
-    error = loadDDS("assets/uvmap.DDS", &monkey.Texture); //loadDDS("imgs/uvmap.DDS");
+    // error = loadDDS("assets/uvmap.DDS", &monkey.Texture); //loadDDS("imgs/uvmap.DDS");
 
-    if(error != 0)
-    {
-        fprintf(stderr, "Failed to load Texture in game file: %d\n", error);
-        return -1;
-    }
-
-    // monkey.setPos(glm::vec3(1.0f));
-    
-    // //read .obj file
-    // std::vector<glm::vec3> vertices;
-    // std::vector<glm::vec2> uvs;
-    // std::vector<glm::vec3> normals;
-    // error = loadOBJ("assets/suzanne.obj", vertices, uvs, normals);
     // if(error != 0)
     // {
-    //     fprintf(stderr, "Error: Failed to load mesh.\n");
-    //     return error;
+    //     fprintf(stderr, "Failed to load Texture in game file: %d\n", error);
+    //     return -1;
     // }
-    
-    // //VBO indexing
-    // std::vector<unsigned short> indices;
-    // std::vector<glm::vec3> indexed_vertices;
-    // std::vector<glm::vec2> indexed_uvs;
-    // std::vector<glm::vec3> indexed_normals;
-    // indexVBO(vertices, uvs, normals, indexed_vertices, indexed_uvs, indexed_normals, indices);
-
-    
 
     // Get a handle for  "myTextureSampler" uniform
 	TextureID  = glGetUniformLocation(program, "myTextureSampler");
@@ -158,7 +136,7 @@ int Game(void)
     frames = 0;
     do
     {
-    
+    //log the fps
         double currentTime;
         currentTime = glfwGetTime();
         frames++;
@@ -168,31 +146,21 @@ int Game(void)
             frames = 0;
             lastTime += 1.0f;
         }
-
+        //clear the displaye
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-
-        
-        computeMatricesFromInputs();
-        
-	    // Camera matrix
-        glm::mat4 ProjectionMatrix = getProjectionMatrix();
-	    glm::mat4 ViewMatrix  = getViewMatrix();
-
         
 	    //Use the shaders
         glUseProgram(program);
         
         glm::vec3 lightPos = glm::vec3(4, 4, 4);
         glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.y);
-        //bind the contant matrix
-        glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &ViewMatrix[0][0]);
+
+       
         
 
         
         //render(monkey, ProjectionMatrix, ViewMatrix);
-        renderScene(ProjectionMatrix, ViewMatrix);
+        renderScene();
         if(error != 0)
         {
             fprintf(stderr, "Error: Failed in the rendering Method: ErrorCode %d\n", error);
@@ -222,13 +190,13 @@ int Game(void)
 
     return 0;
 }
-void GenVao(GLuint* id)
+inline void GenVao(GLuint* id)
 {
     glGenVertexArrays(1, id);
     glBindVertexArray(*id);
 }
 
-int InitAll()
+inline int InitAll()
 {
     if( !glfwInit() )
     {
@@ -395,11 +363,17 @@ inline int render(Model model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
     return 0;
 }
 
-inline void renderScene(glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
+inline void renderScene(Scene* scene)
 {
+    scene->player.camera.update();
+    glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &scene->player.camera.ViewMatrix[0][0]);
 
-    for(Model m : scene.contents)
+    for(Model m : scene->contents)
     {
-        error = render(m, ProjectionMatrix, ViewMatrix);
+        error = render(m, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
+    }
+    for(Enemy e : scene->enemies)
+    {
+        error = render(e.model, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
     }
 }

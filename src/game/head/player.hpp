@@ -38,7 +38,6 @@ class Player
      Player();
      int collideWithSight(Model model);
      int collideWith(Model model);
-     Player(glm::vec3 position);
      ~Player();
 
 };

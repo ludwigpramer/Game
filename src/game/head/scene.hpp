@@ -13,15 +13,18 @@
 
 #include "model.hpp"
 #include "player.hpp"
+#include "enemy.hpp"
 
 class Scene
 {
      public:
      std::vector<Model> contents;
+     std::vector<Enemy> enemies;
      Player player;
 
      public:
      void add(Model model);
+     Scene();
      Scene(Player player);
      Scene(std::vector<Model> contents, Player player);
      ~Scene();
