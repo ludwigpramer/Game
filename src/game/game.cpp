@@ -61,7 +61,7 @@ void loadBuffers(
     std::vector<glm::vec2> indexed_uvs,
     std::vector<glm::vec3> indexed_normals);
     
-void renderScene();
+void renderScene(Scene* scene);
 int render(Model model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix);
 
 static GLuint vertexbuffer;
@@ -160,7 +160,7 @@ int Game(void)
 
         
         //render(monkey, ProjectionMatrix, ViewMatrix);
-        renderScene();
+        renderScene(&scene);
         if(error != 0)
         {
             fprintf(stderr, "Error: Failed in the rendering Method: ErrorCode %d\n", error);

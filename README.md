@@ -17,7 +17,7 @@
 
 ## :dart: About ##
 
-Describe your project
+My OpenGL testing project to learn about OpenGl
 
 ## :rocket: Technologies ##
 
