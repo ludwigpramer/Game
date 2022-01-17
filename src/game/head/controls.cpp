@@ -4,37 +4,18 @@ extern GLFWwindow* window;
 extern FILE* logFile;
 
 
-void logVec3(const char* name, glm::vec3 l)
+Controller::Controller()
 {
-     printf("%s %f %f %f\n", name, l.x, l.y, l.z);
+     update();
+}
+
+Controller::~Controller()
+{
+
 }
 
 
-glm::mat4 ViewMatrix;
-
-glm::mat4 ProjectionMatrix;
-
-glm::vec3 position = CAMERA_STARTING_POS;
-
-glm::vec3 direction;
-
-glm::vec3 up;
-
-int mouseBound = MOUSE_BOUND;
-
-float horizontalAngle = 90.0f;
-
-float verticalAngle = 0.0f;
-
-float initialFoV = 45.0f;
-
-float speed = BASE_SPEED;
-
-float mouseSpeed = MOUSE_SPEED;
-
-double lastTime;
-
-void computeMatricesFromInputs()
+void Controller::update()
 {
     
      double currentTime= glfwGetTime();
@@ -154,24 +135,24 @@ void computeMatricesFromInputs()
 
 }
 
-glm::mat4 getProjectionMatrix()
+glm::mat4 Controller::getProjectionMatrix()
 {
      return ProjectionMatrix;
 }
 
-glm::mat4 getViewMatrix()
+glm::mat4 Controller::getViewMatrix()
 {
      return ViewMatrix;
 }
-glm::vec3 getPositionVector()
+glm::vec3 Controller::getPositionVector()
 {
      return position;
 }
-glm::vec3 getDirectionVector()
+glm::vec3 Controller::getDirectionVector()
 {
      return direction;
 }
-glm::vec3 getUpVector()
+glm::vec3 Controller::getUpVector()
 {
      return up;
 }

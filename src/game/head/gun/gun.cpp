@@ -18,8 +18,8 @@ Gun::~Gun()
      
 }
 
-void Gun::update()
+void Gun::update(glm::vec3 playerPosition)
 {
-     position = getPositionVector() + glm::vec3();
+     position = playerPosition + glm::vec3();
      this->model.position = position;
 }

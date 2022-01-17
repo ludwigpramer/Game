@@ -1,13 +1,14 @@
 #include "game/game.hpp"
 
+#include "constants.hpp"
 
-const char** args;
+
 
 
 int main(int argc, const char** argv)
 {    
      (void) argc;
-     args = argv;
+     (void) argv;
      int errorStatus = Game();
      return errorStatus;
 }

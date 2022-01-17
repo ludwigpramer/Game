@@ -13,19 +13,48 @@
 #include "../../constants.hpp"
 
 
+class Controller
+{
+     private:
+     glm::mat4 ViewMatrix;
 
+     glm::mat4 ProjectionMatrix;
 
+     glm::vec3 position = CAMERA_STARTING_POS;
 
-void computeMatricesFromInputs();
+     glm::vec3 direction;
 
-glm::mat4 getProjectionMatrix();
+     glm::vec3 up;
 
-glm::mat4 getViewMatrix();
+     int mouseBound = MOUSE_BOUND;
 
-glm::vec3 getPositionVector();
+     float horizontalAngle = 90.0f;
 
-glm::vec3 getDirectionVector();
+     float verticalAngle = 0.0f;
 
-glm::vec3 getUpVector();
+     float initialFoV = 45.0f;
+
+     float speed = BASE_SPEED;
+
+     float mouseSpeed = MOUSE_SPEED;
+
+     double lastTime;
+     public:
+     Controller();
+     ~Controller();
+
+     void update();
+
+     glm::mat4 getProjectionMatrix();
+
+     glm::mat4 getViewMatrix();
+
+     glm::vec3 getPositionVector();
+
+     glm::vec3 getDirectionVector();
+
+     glm::vec3 getUpVector();
+};
+
 
 #endif

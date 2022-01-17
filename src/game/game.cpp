@@ -37,8 +37,7 @@ int i = 0;
 #define lg
 #endif
 
-//The input arguments
-extern const char** args;
+
 
 //the globally used variables
 GLFWwindow* window; //The windowobject
@@ -160,6 +159,7 @@ int Game(void)
 
         
         //render(monkey, ProjectionMatrix, ViewMatrix);
+        scene.update();
         renderScene(&scene);
         if(error != 0)
         {
@@ -211,7 +211,7 @@ inline int InitAll()
 
 
     
-    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, NULL, NULL);
+    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, START_WINDOW_FULL_SCREEN_MODE ? glfwGetPrimaryMonitor() : NULL, NULL);
 
     if( window == NULL)
     {

@@ -22,7 +22,7 @@ class Gun
      Gun();
      Gun(glm::vec3 position);
      ~Gun();
-     void update();
+     void update(glm::vec3 playerPosition);
 };
 
 #endif

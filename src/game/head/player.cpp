@@ -17,13 +17,13 @@ int Player::collideWithSight(Model model)
 }
 void Player::update()
 {
-     computeMatricesFromInputs();
-     gun.update();
-     position = getPositionVector();
-     direction = getDirectionVector();
-     up = getUpVector();
+     controller.update();
+     position = controller.getPositionVector();
+     direction = controller.getDirectionVector();
+     up = controller.getUpVector();
 
-     camera.update(position, direction, up);
+     gun.update(position);
+     camera.update(position, direction, up, controller.getProjectionMatrix(), controller.getViewMatrix());
 }
 
 Player::Player()

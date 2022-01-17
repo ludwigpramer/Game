@@ -14,6 +14,7 @@
 
 
 //Define the WindowConstants
+#define START_WINDOW_FULL_SCREEN_MODE 0
 #define WINDOW_WIDTH 1024
 #define WINDOW_HEIGHT 768
 #define WINDOW_TITLE "TEST"
@@ -34,6 +35,7 @@
 #define CAMERA_STARTING_DIRECTION glm::vec3(0, 0, 1)
 #define PLAYER_STARTING_DIRECTION CAMERA_STARTING_DIRECTION
 
+#define ENEMY_STARTING_COUNT 2
 
 
 
@@ -43,6 +45,7 @@
 #define LOG_FILE_MODE "w"
 #define logFps(x) printf("%d fps\n", x)
 #define logMspf(x) printf("%f ms/frame\n", 1000.0/double(x))
+#define logVec3(name, l) printf("%s %f %f %f\n", name, l.x, l.y, l.z)
 #else
 #define LOG_CONTROLS
 #define LOG_FILE_MODE "w"
