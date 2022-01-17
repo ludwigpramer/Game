@@ -13,7 +13,7 @@ Model::Model(const char* texturepath, const char* objpath)
      ModelMatrix = glm::mat4(1.0f);
 
      //load the texture
-     error = loadDDS(texturepath, &Texture); //loadDDS("imgs/uvmap.DDS");
+     Texture = loadDDS(texturepath); //loadDDS("imgs/uvmap.DDS");
 
      if(error != 0)
      {

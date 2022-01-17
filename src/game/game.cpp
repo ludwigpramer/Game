@@ -108,12 +108,6 @@ int Game(void)
     Scene scene = Scene(player);
     Model monkey("assets/uvmap.DDS", "assets/suzanne.obj");
     scene.add(monkey);
-    // error = loadDDS("assets/uvmap.DDS", &monkey.Texture); //loadDDS("imgs/uvmap.DDS");
-
-    // if(error != 0)
-    // {
-    //     fprintf(stderr, "Failed to load Texture in game file: %d\n", error);
-    //     return -1;
     // }
 
     // Get a handle for  "myTextureSampler" uniform
@@ -305,9 +299,11 @@ inline int render(Model model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 
     glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &model.ModelMatrix[0][0]);
 
+    GLuint Tex = loadDDS("assets/uvmap.DDS");
+    
     // Bind texture in Texture Unit 0
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, model.Texture);
+	glBindTexture(GL_TEXTURE_2D, Tex);
 	//Set "myTextureSampler" sampler to use Texture Unit 0
 	glUniform1i(TextureID, 0);
 
