@@ -17,7 +17,6 @@ Controller::~Controller()
 
 void Controller::update()
 {
-    
      double currentTime= glfwGetTime();
      float deltaTime = float(currentTime - lastTime);
      lastTime = currentTime;
