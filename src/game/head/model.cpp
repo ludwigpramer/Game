@@ -10,11 +10,10 @@ Model::Model(const char* texturepath, const char* objpath)
 {
              
      position = glm::vec3(0.0f); 
-     ModelMatrix = glm::mat4(1.0f);
+     ModelMatrix = IDENTITY_MATRIX;
 
      //load the texture
      Texture = loadDDS(texturepath); //loadDDS("imgs/uvmap.DDS");
-
      if(error != 0)
      {
           fprintf(stderr, "Error: Failed to load Texture: Exit code%d\n", error);
@@ -35,6 +34,11 @@ void Model::setPos(glm::vec3 position)
 {
      this->position = position;
      ModelMatrix = glm::translate(IDENTITY_MATRIX, position);
+}
+
+void Model::setRot(double alpha, double beta, double gamma)
+{
+     ModelMatrix = IDENTITY_MATRIX * getRotationMatrix(alpha, beta, gamma);
 }
 
 Model::~Model()

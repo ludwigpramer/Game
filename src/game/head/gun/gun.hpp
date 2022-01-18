@@ -6,6 +6,7 @@
 #include <vector>
 
 #include <glm/glm.hpp>
+#include <glm/gtx/vector_angle.hpp>
 
 #include "../../../constants.hpp"
 
@@ -18,10 +19,12 @@ class Gun
      public:
      Model model;
      glm::vec3 position;
+     glm::vec3 direction;
+     double alpha, beta, gamma;
      
      public:
      Gun();
-     Gun(glm::vec3 position);
+     Gun(glm::vec3 position, glm::vec3 direction);
      ~Gun();
      void update(glm::vec3 playerPosition, glm::vec3 playerDirection);
 };

@@ -28,11 +28,11 @@ class Controller
 
      int mouseBound = MOUSE_BOUND;
 
+     int cameraBound = 0;
+
      float horizontalAngle = 90.0f;
 
      float verticalAngle = 0.0f;
-
-     float initialFoV = 45.0f;
 
      float speed = BASE_SPEED;
 

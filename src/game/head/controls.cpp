@@ -20,6 +20,8 @@ void Controller::update()
      double currentTime= glfwGetTime();
      float deltaTime = float(currentTime - lastTime);
      lastTime = currentTime;
+     //the field of view
+     float FoV = NORMAL_FOV;
 
      double xpos, ypos;
      if(mouseBound)
@@ -55,36 +57,36 @@ void Controller::update()
      );
 
      up = glm::cross(right, direction);
-     //move forward
-     if (glfwGetKey(window, GLFW_KEY_W ) == GLFW_PRESS)
+     //move forwards
+     if (glfwGetKey(window, GLFW_KEY_W ) == GLFW_PRESS && !cameraBound)
      {
           position += normalize(glm::vec3(direction.x, 0.0f, direction.z)) * deltaTime * speed;
      }
-     //move backward
-     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+     //move backwards
+     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && !cameraBound)
      {
           position -= normalize(glm::vec3(direction.x, 0.0f, direction.z)) * deltaTime * speed;
      }
      //move right
-     if (glfwGetKey(window, GLFW_KEY_D ) == GLFW_PRESS)
+     if (glfwGetKey(window, GLFW_KEY_D ) == GLFW_PRESS && !cameraBound)
      {
           position += normalize(right) * deltaTime * speed;
      }
      //move left
-     if (glfwGetKey(window, GLFW_KEY_A ) == GLFW_PRESS)
+     if (glfwGetKey(window, GLFW_KEY_A ) == GLFW_PRESS && !cameraBound)
      {
           position -= normalize(right) * deltaTime * speed;
      }
-     if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+     if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && !cameraBound)
      {
           position.y -= deltaTime * speed;
      }
-
-     if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+     //move up
+     if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !cameraBound)
      {
           position.y += deltaTime * speed;
      }
-
+     //speed
      if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
      {
           speed = BOOST_SPEED;
@@ -92,23 +94,45 @@ void Controller::update()
      {
           speed = BASE_SPEED;
      }
-     if(glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
+     //unbind mouse
+     if(glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS && mouseBound)
      {
           mouseBound = 0;
      }
+     //bind mouse
      if(glfwGetKey(window, GLFW_KEY_BACKSPACE) == GLFW_PRESS && !mouseBound)
      {
           mouseBound = 1;
           glfwSetCursorPos(window, WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
      }
+     //shoot
      if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1)  == GLFW_PRESS)
      {
           printf("Shoot!!!\n");
      }
+     if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2) == GLFW_PRESS)
+     {
+
+          FoV = SCOPE_FOV;
+          
+     } else
+     {
+
+          FoV = NORMAL_FOV;
+     }
+     if(glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+     {
+
+          cameraBound = 0;
+     }
+     if(glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
+     {
+
+          cameraBound = 1;
+     }
   
 
-     //compute FoV
-     float FoV = initialFoV;
+
      #ifdef LOGCONTROLS
      printf(
           "%s %f %f %f %s %f %f %f %s %f %f %s %s %f %s %f \n",

@@ -49,6 +49,7 @@ public:
      Model(const char* texturepath, const char* objpath);
      Model(const char* texturepath, const char* objpath, glm::vec3 position);
      void setPos(glm::vec3 position);
+     void setRot(double alpha, double beta, double gamma);
      ~Model();
 };
 

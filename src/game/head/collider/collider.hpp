@@ -15,7 +15,7 @@ class SimpleBoxCollider
 {
      public:
      glm::vec3 A;
-     glm::vec3 G;
+     glm::vec3 B;
      public:
      SimpleBoxCollider();
      SimpleBoxCollider(glm::vec3 A, glm::vec3 G);

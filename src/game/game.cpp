@@ -105,12 +105,15 @@ int Game(void)
     
     Player player;
     Scene scene = Scene(player);
-    //Make model
+    //Make models
     Model monkey("assets/uvmap.DDS", "assets/suzanne.obj");
-    monkey.ModelMatrix = IDENTITY_MATRIX * getRotationMatrix(170, 0, 0);
+    monkey.ModelMatrix = glm::translate(IDENTITY_MATRIX, glm::vec3(10.0f, 0.0f, 0.0f)) * getRotationMatrix(170, 0, 0);
     scene.add(monkey);
-    monkey.ModelMatrix = glm::translate(IDENTITY_MATRIX, glm::vec3(10.0f, 0.0f, 0.0f));
-
+    
+    Enemy enemy;
+    enemy.setPos(glm::vec3(5.0f, 0.0f, 0.0f));  
+    scene.add(enemy);
+    
 
     // Get a handle for  "myTextureSampler" uniform
 	TextureID  = glGetUniformLocation(program, "myTextureSampler");
@@ -125,7 +128,7 @@ int Game(void)
 
     LightID = glGetUniformLocation(program, "LightPosition_worldspace");
     
-    printf("PlayerPos:%f %f %f GunPos:%f %f %f ObjPos: %f %f %f \n", scene.player.position.x, scene.player.position.y, scene.player.position.z, scene.player.gun.position.x, scene.player.gun.position.y, scene.player.gun.position.z, 0.0f, 0.0f, 0.0f);
+    //printf("PlayerPos:%f %f %f MonkeyPos:%f %f %f ObjPos: %f %f %f \n", scene.player.position.x, scene.player.position.y, scene.player.position.z, monkey.position.x, monkey.position.y, monkey.position.z, 0.0f, 0.0f, 0.0f);
     double lastTime;
     int frames;
     lastTime = glfwGetTime();
@@ -141,8 +144,8 @@ int Game(void)
             logFps(frames);
             frames = 0;
             lastTime += 1.0f;
-            printf("PlayerPos:%f %f %f GunPos:%f %f %f ObjPos: %f %f %f \n", scene.player.position.x, scene.player.position.y, scene.player.position.z, scene.player.gun.position.x, scene.player.gun.position.y, scene.player.gun.position.z, 0.0f, 0.0f, 0.0f);
-   
+            //printf("PlayerPos:%f %f %f GunPos:%f %f %f ObjPos: %f %f %f \n", scene.player.position.x, scene.player.position.y, scene.player.position.z, monkey.position.x, monkey.position.y, monkey.position.z, 0.0f, 0.0f, 0.0f);
+          
         }
         //clear the displaye
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -233,7 +236,7 @@ inline int InitAll()
     glfwPollEvents();
     glfwSetCursorPos(window, WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
 
-    glClearColor(0.0f, 1.0f, 1.0f, 0.9f);
+    glClearColor(BACKGROUND_COLOR);
     //enable depth test
     glEnable(GL_DEPTH_TEST);
     //accept fragment if it is closer to the camera than the former one

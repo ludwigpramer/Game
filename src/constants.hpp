@@ -19,11 +19,16 @@
 #define WINDOW_HEIGHT 768
 #define WINDOW_TITLE "TEST"
 
+#define BACKGROUND_COLOR 0.0f, 1.0f, 1.0f, 0.9f
+
 //define the ControllConstants
 #define BASE_SPEED 3.0f
 #define BOOST_SPEED 9.0f
 #define MOUSE_SPEED 0.005f
 #define MOUSE_BOUND 0
+
+#define NORMAL_FOV 45
+#define SCOPE_FOV 20
 
 //define the Path contants
 #define GUN_TEXTURE_PATH "assets/uvmap.DDS"
@@ -36,6 +41,11 @@
 #define PLAYER_STARTING_DIRECTION CAMERA_STARTING_DIRECTION
 
 #define G_UP glm::vec3(0, 1, 0)
+#define G_DOWN -G_UP
+#define G_RIGHT glm::vec3(0, 0, 1)
+#define G_LEFT -G_RIGHT
+#define G_FORWARDS glm::vec3(1, 0, 0)
+#define G_BACKWARDS -G_FORWARDS
 
 #define ENEMY_STARTING_COUNT 2
 

@@ -24,6 +24,7 @@ class Scene
 
      public:
      void add(Model model);
+     void add(Enemy enemy);
      void update();
      Scene();
      Scene(Player player);
