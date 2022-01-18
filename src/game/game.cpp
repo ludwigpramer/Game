@@ -106,9 +106,10 @@ int Game(void)
     Player player;
     Scene scene = Scene(player);
     //Make model
-    // Model monkey("assets/uvmap.DDS", "assets/suzanne.obj");
-    // scene.add(monkey);
-    // monkey.ModelMatrix = glm::translate(IDENTITY_MATRIX, glm::vec3(10.0f, 0.0f, 0.0f));
+    Model monkey("assets/uvmap.DDS", "assets/suzanne.obj");
+    monkey.ModelMatrix = IDENTITY_MATRIX * getRotationMatrix(170, 0, 0);
+    scene.add(monkey);
+    monkey.ModelMatrix = glm::translate(IDENTITY_MATRIX, glm::vec3(10.0f, 0.0f, 0.0f));
 
 
     // Get a handle for  "myTextureSampler" uniform
@@ -375,5 +376,5 @@ inline void renderScene(Scene* scene)
     {
         error = render(e.model, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
     }
-    error = render(scene->player.gun.model, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
+    //error = render(scene->player.gun.model, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
 }
