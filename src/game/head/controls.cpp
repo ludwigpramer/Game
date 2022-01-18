@@ -25,6 +25,7 @@ void Controller::update()
      double xpos, ypos;
      if(mouseBound)
      {
+     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	glfwGetCursorPos(window, &xpos, &ypos);
 	//Compute orientation
 	horizontalAngle += mouseSpeed * float(WINDOW_WIDTH/2 - xpos );
@@ -34,6 +35,10 @@ void Controller::update()
 	glfwSetCursorPos(window, WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
 
      //printf("%d\n", horizontalAngle);
+     }
+     else
+     {
+          glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
      }
      //direction vector
 	direction = glm::vec3(
@@ -96,6 +101,10 @@ void Controller::update()
      {
           mouseBound = 1;
           glfwSetCursorPos(window, WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
+     }
+     if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1)  == GLFW_PRESS)
+     {
+          printf("Shoot!!!\n");
      }
   
 

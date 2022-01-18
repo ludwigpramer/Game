@@ -140,6 +140,8 @@ int Game(void)
             logFps(frames);
             frames = 0;
             lastTime += 1.0f;
+            printf("PlayerPos:%f %f %f GunPos:%f %f %f ObjPos: %f %f %f \n", scene.player.position.x, scene.player.position.y, scene.player.position.z, scene.player.gun.position.x, scene.player.gun.position.y, scene.player.gun.position.z, 0.0f, 0.0f, 0.0f);
+   
         }
         //clear the displaye
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

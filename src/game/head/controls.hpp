@@ -28,6 +28,8 @@ class Controller
 
      int mouseBound = MOUSE_BOUND;
 
+     int mouseLastBound = MOUSE_BOUND;
+
      float horizontalAngle = 90.0f;
 
      float verticalAngle = 0.0f;
