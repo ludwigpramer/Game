@@ -34,7 +34,7 @@ Model::Model(const char* texturepath, const char* objpath)
 void Model::setPos(glm::vec3 position)
 {
      this->position = position;
-     ModelMatrix = glm::translate(ModelMatrix, position);
+     ModelMatrix = glm::translate(IDENTITY_MATRIX, position);
 }
 
 Model::~Model()

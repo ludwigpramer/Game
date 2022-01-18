@@ -103,12 +103,13 @@ int Game(void)
 
 
     
-    //Make model
     Player player;
     Scene scene = Scene(player);
-    Model monkey("assets/uvmap.DDS", "assets/suzanne.obj");
-    scene.add(monkey);
-    // }
+    //Make model
+    // Model monkey("assets/uvmap.DDS", "assets/suzanne.obj");
+    // scene.add(monkey);
+    // monkey.ModelMatrix = glm::translate(IDENTITY_MATRIX, glm::vec3(10.0f, 0.0f, 0.0f));
+
 
     // Get a handle for  "myTextureSampler" uniform
 	TextureID  = glGetUniformLocation(program, "myTextureSampler");
@@ -123,6 +124,7 @@ int Game(void)
 
     LightID = glGetUniformLocation(program, "LightPosition_worldspace");
     
+    printf("PlayerPos:%f %f %f GunPos:%f %f %f ObjPos: %f %f %f \n", scene.player.position.x, scene.player.position.y, scene.player.position.z, scene.player.gun.position.x, scene.player.gun.position.y, scene.player.gun.position.z, 0.0f, 0.0f, 0.0f);
     double lastTime;
     int frames;
     lastTime = glfwGetTime();
@@ -150,7 +152,6 @@ int Game(void)
 
        
         
-
         
         //render(monkey, ProjectionMatrix, ViewMatrix);
         scene.update();
@@ -298,9 +299,9 @@ inline int render(Model model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
     glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
     glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &model.ModelMatrix[0][0]);
-
+#if 1
     GLuint Tex = loadDDS("assets/uvmap.DDS");
-    
+#endif   
     // Bind texture in Texture Unit 0
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, Tex);
@@ -367,6 +368,7 @@ inline void renderScene(Scene* scene)
     {
         error = render(m, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
     }
+
     for(Enemy e : scene->enemies)
     {
         error = render(e.model, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);

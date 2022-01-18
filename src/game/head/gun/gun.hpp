@@ -11,6 +11,7 @@
 
 #include "../model.hpp"
 #include "../controls.hpp"
+#include "../../../renderingHead/matrices.hpp"
 
 class Gun
 {    
@@ -22,7 +23,7 @@ class Gun
      Gun();
      Gun(glm::vec3 position);
      ~Gun();
-     void update(glm::vec3 playerPosition);
+     void update(glm::vec3 playerPosition, glm::vec3 playerDirection);
 };
 
 #endif

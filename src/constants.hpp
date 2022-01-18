@@ -11,7 +11,7 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
-
+#include "renderingHead/matrices.hpp"
 
 //Define the WindowConstants
 #define START_WINDOW_FULL_SCREEN_MODE 0
@@ -35,6 +35,8 @@
 #define CAMERA_STARTING_DIRECTION glm::vec3(0, 0, 1)
 #define PLAYER_STARTING_DIRECTION CAMERA_STARTING_DIRECTION
 
+#define G_UP glm::vec3(0, 1, 0)
+
 #define ENEMY_STARTING_COUNT 2
 
 
@@ -52,6 +54,11 @@
 #define logFps(x) printf("%d fps\n", x)
 #define logMspf(x) printf("%f ms/frame\n", 1000.0/double(x))
 #endif
+
+
+#ifdef LOG_POSITIONS
+
+#endif 
 
 //The temporary color buffer data
 const GLfloat g_color_buffer_data[] = {

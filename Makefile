@@ -1,12 +1,12 @@
 CC= clang++
 FRAMEWORKS= -framework Cocoa -framework OpenGL -framework IOKit
 CFLAGS= -std=c++17
-DEBUGCFLAGS= -Wall -Wextra -Wpedantic -D DEBUG
+DEBUGCFLAGS= -Wall -Wextra -Wpedantic -D DEBUG -D LOG_POSITIONS
 EXTRACFLAGS= -g -v
 LIBS= -lglfw3 -lGLEW
 OUTPUT= bin/app
 WINOUT= bin/win64App.exe
-DEPENDENCIES= src/renderingHead/shader.cpp src/renderingHead/texture.cpp  src/renderingHead/objloader.cpp  src/renderingHead/vboindexing.cpp
+DEPENDENCIES= src/renderingHead/shader.cpp src/renderingHead/texture.cpp  src/renderingHead/objloader.cpp  src/renderingHead/vboindexing.cpp src/renderingHead/matrices.cpp
 GAME= src/game/game.cpp src/game/head/controls.cpp src/game/head/model.cpp src/game/head/scene.cpp src/game/head/gun/gun.cpp src/game/head/collider/collider.cpp src/game/head/player.cpp src/game/head/camera.cpp src/game/head/enemy.cpp src/game/head/raycast.cpp
 MAIN= src/main.cpp
 MLIBFOLDER= -L./libs/macos

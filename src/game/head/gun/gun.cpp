@@ -18,8 +18,11 @@ Gun::~Gun()
      
 }
 
-void Gun::update(glm::vec3 playerPosition)
+void Gun::update(glm::vec3 playerPosition, glm::vec3 playerDirection)
 {
-     position = playerPosition + glm::vec3();
-     this->model.position = position;
+     position = glm::vec3(0, 0, 0);
+     //position = playerPosition + glm::normalize(playerDirection) * 2.0f;
+     model.setPos(position);
+     model.ModelMatrix = model.ModelMatrix * ROTATION_MATRIX(170, 0, 0);
+
 }
