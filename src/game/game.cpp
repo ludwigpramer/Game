@@ -63,6 +63,8 @@ void loadBuffers(
 void renderScene(Scene* scene);
 int render(Model model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix);
 
+void logCwd();
+
 static GLuint vertexbuffer;
 static GLuint uvbuffer;
 static GLuint normalbuffer;
@@ -80,7 +82,7 @@ static GLuint ModelMatrixID;
 
 int Game(void)
 {
-    
+    logCwd();
     GLuint program;
 
     error = InitAll();
@@ -380,4 +382,17 @@ inline void renderScene(Scene* scene)
         error = render(e.model, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
     }
     //error = render(scene->player.gun.model, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
+}
+inline void logCwd()
+{
+	//Print debugging info
+    char cwd[PATH_MAX];
+    if (getcwd(cwd, sizeof(cwd)) != NULL) {
+        printf("Current working dir: %s\n", cwd);
+    }
+    else 
+    {
+        perror("getcwd() error");
+         exit(1);
+    }
 }
