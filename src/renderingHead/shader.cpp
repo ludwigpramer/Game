@@ -2,15 +2,8 @@
 
 
 using namespace std;
-GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path){
-	//Print debugging info
-	char cwd[PATH_MAX];
-   if (getcwd(cwd, sizeof(cwd)) != NULL) {
-       printf("Current working dir: %s\n", cwd);
-   } else {
-       perror("getcwd() error");
-       exit(1);
-   }
+GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path)
+{
 	//Create the shaders
 	GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
 	GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);

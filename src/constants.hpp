@@ -58,12 +58,14 @@
 #define logFps(x) printf("%d fps\n", x)
 #define logMspf(x) printf("%f ms/frame\n", 1000.0/double(x))
 #define logVec3(name, l) printf("%s %f %f %f\n", name, l.x, l.y, l.z)
+
 #else
 #define LOG_CONTROLS
 #define LOG_FILE_MODE "w"
 #define logFps(x) printf("%d fps\n", x)
 #define logMspf(x) printf("%f ms/frame\n", 1000.0/double(x))
 #endif
+
 
 
 #ifdef LOG_POSITIONS
@@ -110,4 +112,16 @@ const GLfloat g_color_buffer_data[] = {
      0.982f,  0.099f,  0.879f
 };
 
+void logCWD()
+{
+	//Print debugging info
+char cwd[PATH_MAX];
+if (getcwd(cwd, sizeof(cwd)) != NULL) {
+     printf("Current working dir: %s\n", cwd);
+} else 
+{
+     perror("getcwd() error");
+     exit(1);
+     }
+}
 #endif
