@@ -112,16 +112,5 @@ const GLfloat g_color_buffer_data[] = {
      0.982f,  0.099f,  0.879f
 };
 
-void logCWD()
-{
-	//Print debugging info
-char cwd[PATH_MAX];
-if (getcwd(cwd, sizeof(cwd)) != NULL) {
-     printf("Current working dir: %s\n", cwd);
-} else 
-{
-     perror("getcwd() error");
-     exit(1);
-     }
-}
+
 #endif

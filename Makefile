@@ -8,7 +8,7 @@ OUTPUT= bin/app
 WINOUT= bin/win64App.exe
 DEPENDENCIES= src/renderingHead/shader.cpp src/renderingHead/texture.cpp  src/renderingHead/objloader.cpp  src/renderingHead/vboindexing.cpp src/renderingHead/matrices.cpp src/renderingHead/vectors.cpp
 GAME= src/game/game.cpp src/game/head/controls.cpp src/game/head/model.cpp src/game/head/scene.cpp src/game/head/gun/gun.cpp src/game/head/collider/collider.cpp src/game/head/player.cpp src/game/head/camera.cpp src/game/head/enemy.cpp src/game/head/raycast.cpp
-MAIN= src/main.cpp
+MAIN= src/main.cpp src/args.cpp
 MLIBFOLDER= -L./libs/macos
 wLIBFOLDER= -L./libs/win32
 

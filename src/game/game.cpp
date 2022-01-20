@@ -63,7 +63,7 @@ void loadBuffers(
 void renderScene(Scene* scene);
 int render(Model model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix);
 
-void logCwd();
+//void logCwd();
 
 static GLuint vertexbuffer;
 static GLuint uvbuffer;
@@ -82,7 +82,16 @@ static GLuint ModelMatrixID;
 
 int Game(void)
 {
-    logCwd();
+    //Print debugging info
+    char cwd[PATH_MAX];
+    if (getcwd(cwd, sizeof(cwd)) != NULL) {
+        printf("Current working dir: %s\n", cwd);
+    }
+    else 
+    {
+        perror("getcwd() error");
+        exit(1);
+    }
     GLuint program;
 
     error = InitAll();
@@ -107,14 +116,16 @@ int Game(void)
     
     Player player;
     Scene scene = Scene(player);
-    //Make models
+    //Make model
     Model monkey("assets/uvmap.DDS", "assets/suzanne.obj");
     monkey.ModelMatrix = glm::translate(IDENTITY_MATRIX, glm::vec3(10.0f, 0.0f, 0.0f)) * getRotationMatrix(170, 0, 0);
     scene.add(monkey);
-    
+    //Test enemy
     Enemy enemy;
     enemy.setPos(glm::vec3(5.0f, 0.0f, 0.0f));  
     scene.add(enemy);
+
+
     
 
     // Get a handle for  "myTextureSampler" uniform
@@ -385,14 +396,5 @@ inline void renderScene(Scene* scene)
 }
 inline void logCwd()
 {
-	//Print debugging info
-    char cwd[PATH_MAX];
-    if (getcwd(cwd, sizeof(cwd)) != NULL) {
-        printf("Current working dir: %s\n", cwd);
-    }
-    else 
-    {
-        perror("getcwd() error");
-         exit(1);
-    }
+
 }
