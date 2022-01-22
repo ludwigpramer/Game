@@ -25,7 +25,7 @@ class Scene
      public:
      void add(Model model);
      void add(Enemy enemy);
-     void update();
+     void update(int* windowFullscreen);
      Scene();
      Scene(Player player);
      Scene(std::vector<Model> contents, Player player);

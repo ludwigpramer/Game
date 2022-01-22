@@ -10,10 +10,10 @@ void Scene::add(Enemy enemy)
      enemies.push_back(enemy);
 }
 
-void Scene::update()
+void Scene::update(int* windowFullscreen)
 {
 
-     player.update();
+     player.update(windowFullscreen);
 
      for(Enemy e : enemies)
      {

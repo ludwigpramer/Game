@@ -15,9 +15,9 @@ int Player::collideWithSight(Model model)
      (void) model;
      return 0;
 }
-void Player::update()
+void Player::update(int* windowFullscreen)
 {
-     controller.update();
+     controller.update(windowFullscreen);
 
      position = controller.getPositionVector();
      direction = controller.getDirectionVector();

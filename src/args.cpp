@@ -4,9 +4,12 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "constants.hpp"
+
 //Flags
 int miscFlag = 0;
 int miscInt = 0;
+int windowStartFullscreen;
 
 void parseArgs(int argc, const char** argv)
 {
@@ -26,6 +29,10 @@ void parseArgs(int argc, const char** argv)
                     fprintf(stderr, "Error: Not enough arguments for -i flag provided!\n");
                     exit(-1);
                }
+          }
+          else if(strstr(argv[i], "-w") != NULL)
+          {
+              windowStartFullscreen = 1;
           }
      }
 }

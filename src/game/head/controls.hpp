@@ -12,7 +12,6 @@
 
 #include "../../constants.hpp"
 
-
 class Controller
 {
      private:
@@ -43,7 +42,7 @@ class Controller
      Controller();
      ~Controller();
 
-     void update();
+     void update(int* windowFullscreen);
 
      glm::mat4 getProjectionMatrix();
 

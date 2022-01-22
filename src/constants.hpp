@@ -12,9 +12,9 @@
 #include <glm/glm.hpp>
 
 #include "renderingHead/matrices.hpp"
+#include "args.hpp"
 
 //Define the WindowConstants
-#define START_WINDOW_FULL_SCREEN_MODE 0
 #define WINDOW_WIDTH 1024
 #define WINDOW_HEIGHT 768
 #define WINDOW_TITLE "TEST"
@@ -48,7 +48,6 @@
 #define G_BACKWARDS -G_FORWARDS
 
 #define ENEMY_STARTING_COUNT 2
-
 
 
 //define the logging and LoggingControll constants

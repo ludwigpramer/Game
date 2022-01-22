@@ -2,11 +2,14 @@
 
 extern GLFWwindow* window;
 extern FILE* logFile;
+extern int error;
+extern GLFWmonitor* primaryMonitor;
+extern const GLFWvidmode* mode;
 
 
 Controller::Controller()
 {
-     update();
+
 }
 
 Controller::~Controller()
@@ -15,7 +18,7 @@ Controller::~Controller()
 }
 
 
-void Controller::update()
+void Controller::update(int* windowFullscreen)
 {
      double currentTime= glfwGetTime();
      float deltaTime = float(currentTime - lastTime);
@@ -129,6 +132,27 @@ void Controller::update()
      {
 
           cameraBound = 1;
+     }
+     if(glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS)
+     {
+          printf("ScreenSizeFunc\n");
+          if(!*windowFullscreen)
+          {
+               glfwSetWindowMonitor(window, primaryMonitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+               glfwSetCursorPos(window, mode->width/2, mode->height/2);
+               *windowFullscreen = 1;
+               printf("Fullscreen\n");
+          }
+     }
+     if(glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS)
+     {
+          if(*windowFullscreen)
+          {
+               glfwSetWindowMonitor(window, NULL, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, GLFW_DONT_CARE);
+               glfwSetCursorPos(window, WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
+               *windowFullscreen = 0;
+               printf("UNFullscreen\n");
+          }
      }
   
 
