@@ -17,8 +17,8 @@ My OpenGL testing project to learn about OpenGl
 
 The following tools were used in this project:
 
-- [OpenGL] (https://www.opengl.org)
-- [GLFW] (https://www.glfw.org)
+- [OpenGL](https://www.opengl.org)
+- [GLFW](https://www.glfw.org)
 - [GLEW](http://www.glew.sourceforge.net)
 
 ## :white_check_mark: Requirements ##
