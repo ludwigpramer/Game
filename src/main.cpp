@@ -1,13 +1,15 @@
 #include "game/game.hpp"
+#include "constants.hpp"
+#include "args.hpp"
 
 
-const char** args;
-
+extern int miscFlag;
+extern int miscInt;
 
 int main(int argc, const char** argv)
 {    
-     (void) argc;
-     args = argv;
+     parseArgs(argc, argv);
+     printf("MiscInt: %d\n", miscInt);
      int errorStatus = Game();
      return errorStatus;
 }

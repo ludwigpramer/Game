@@ -15,13 +15,12 @@ class SimpleBoxCollider
 {
      public:
      glm::vec3 A;
-     glm::vec3 G;
+     glm::vec3 B;
      public:
      SimpleBoxCollider();
      SimpleBoxCollider(glm::vec3 A, glm::vec3 G);
-     int collideWith(Ray raycast);
-     int collideWith(SimpleBoxCollider collider);
      ~SimpleBoxCollider();
 };
 
+void CollideWith(SimpleBoxCollider c, Ray r);
 #endif

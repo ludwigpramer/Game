@@ -5,6 +5,23 @@ void Scene::add(Model model)
      contents.push_back(model);
 }
 
+void Scene::add(Enemy enemy)
+{
+     enemies.push_back(enemy);
+}
+
+void Scene::update(int* windowFullscreen)
+{
+
+     player.update(windowFullscreen);
+
+     for(Enemy e : enemies)
+     {
+          e.update();
+     }
+     
+}
+
 Scene::Scene()
 {
      //default contructor

@@ -1,0 +1,14 @@
+!#/bin/sh
+
+if [ $# -eq 0 ]
+  then
+    git add *
+    git commit -m "Changes"
+    git push origin dev
+else
+
+     git add *
+     git add *
+     git commit -m $1
+     git push origin dev
+fi

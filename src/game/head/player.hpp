@@ -29,6 +29,10 @@ class Player
      public:
      glm::vec3 position;
      glm::vec3 direction;
+     glm::vec3 up;
+
+     Controller controller;
+
      Camera camera;
      Gun gun;
      Ray sight;
@@ -38,7 +42,10 @@ class Player
      Player();
      int collideWithSight(Model model);
      int collideWith(Model model);
+     void update(int* windowFullscreen);
      ~Player();
+     private:
+     glm::vec3 getGunPosition();
 
 };
 

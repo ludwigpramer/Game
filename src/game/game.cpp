@@ -37,8 +37,10 @@ int i = 0;
 #define lg
 #endif
 
-//The input arguments
-extern const char** args;
+
+//the extern flags
+
+extern int windowStartFullscreen;
 
 //the globally used variables
 GLFWwindow* window; //The windowobject
@@ -46,6 +48,14 @@ GLFWwindow* window; //The windowobject
 FILE* logFile; //The log file
 
 int error = 0; // the error codes
+
+const GLFWvidmode* mode;
+
+int windowFullScreen;
+
+GLFWmonitor* primaryMonitor;
+
+
 
 GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path);
 
@@ -61,8 +71,10 @@ void loadBuffers(
     std::vector<glm::vec2> indexed_uvs,
     std::vector<glm::vec3> indexed_normals);
     
-void renderScene();
+void renderScene(Scene* scene);
 int render(Model model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix);
+
+//void logCwd();
 
 static GLuint vertexbuffer;
 static GLuint uvbuffer;
@@ -81,7 +93,16 @@ static GLuint ModelMatrixID;
 
 int Game(void)
 {
-    
+    //Print debugging info
+    char cwd[PATH_MAX];
+    if (getcwd(cwd, sizeof(cwd)) != NULL) {
+        printf("Current working dir: %s\n", cwd);
+    }
+    else 
+    {
+        perror("getcwd() error");
+        exit(1);
+    }
     GLuint program;
 
     error = InitAll();
@@ -104,18 +125,19 @@ int Game(void)
 
 
     
-    //Make model
     Player player;
     Scene scene = Scene(player);
+    //Make model
     Model monkey("assets/uvmap.DDS", "assets/suzanne.obj");
+    monkey.ModelMatrix = glm::translate(IDENTITY_MATRIX, glm::vec3(10.0f, 0.0f, 0.0f)) * getRotationMatrix(170, 0, 0);
     scene.add(monkey);
-    // error = loadDDS("assets/uvmap.DDS", &monkey.Texture); //loadDDS("imgs/uvmap.DDS");
+    //Test enemy
+    Enemy enemy;
+    enemy.setPos(glm::vec3(5.0f, 0.0f, 0.0f));  
+    scene.add(enemy);
 
-    // if(error != 0)
-    // {
-    //     fprintf(stderr, "Failed to load Texture in game file: %d\n", error);
-    //     return -1;
-    // }
+
+    
 
     // Get a handle for  "myTextureSampler" uniform
 	TextureID  = glGetUniformLocation(program, "myTextureSampler");
@@ -130,10 +152,12 @@ int Game(void)
 
     LightID = glGetUniformLocation(program, "LightPosition_worldspace");
     
+    //printf("PlayerPos:%f %f %f MonkeyPos:%f %f %f ObjPos: %f %f %f \n", scene.player.position.x, scene.player.position.y, scene.player.position.z, monkey.position.x, monkey.position.y, monkey.position.z, 0.0f, 0.0f, 0.0f);
     double lastTime;
     int frames;
     lastTime = glfwGetTime();
     frames = 0;
+    glfwSetTime(0.0f);
     do
     {
     //log the fps
@@ -145,6 +169,8 @@ int Game(void)
             logFps(frames);
             frames = 0;
             lastTime += 1.0f;
+            //printf("PlayerPos:%f %f %f GunPos:%f %f %f ObjPos: %f %f %f \n", scene.player.position.x, scene.player.position.y, scene.player.position.z, monkey.position.x, monkey.position.y, monkey.position.z, 0.0f, 0.0f, 0.0f);
+          
         }
         //clear the displaye
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -157,10 +183,10 @@ int Game(void)
 
        
         
-
         
         //render(monkey, ProjectionMatrix, ViewMatrix);
-        renderScene();
+        scene.update(&windowFullScreen);
+        renderScene(&scene);
         if(error != 0)
         {
             fprintf(stderr, "Error: Failed in the rendering Method: ErrorCode %d\n", error);
@@ -198,20 +224,34 @@ inline void GenVao(GLuint* id)
 
 inline int InitAll()
 {
-    if( !glfwInit() )
+    if(!glfwInit() )
     {
         fprintf( stderr, "Error: Failed to initialize GLFW\n");
         return -1;
     }
+
+    windowFullScreen = windowStartFullscreen;
+
+    primaryMonitor = glfwGetPrimaryMonitor();
+    
+    mode = glfwGetVideoMode(primaryMonitor);
+
     glfwWindowHint(GLFW_SAMPLES, 4); // 4x anti aliasing
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); //Make macos happy
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //NO old opengl
 
+    glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+    glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+    glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+    glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+
+
+
 
     
-    window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, NULL, NULL);
+    window = windowFullScreen ? glfwCreateWindow(mode->width, mode->height, "My Title", primaryMonitor, NULL) : glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE,  NULL, NULL);
 
     if( window == NULL)
     {
@@ -235,7 +275,7 @@ inline int InitAll()
     glfwPollEvents();
     glfwSetCursorPos(window, WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
 
-    glClearColor(0.0f, 1.0f, 1.0f, 0.9f);
+    glClearColor(BACKGROUND_COLOR);
     //enable depth test
     glEnable(GL_DEPTH_TEST);
     //accept fragment if it is closer to the camera than the former one
@@ -304,10 +344,12 @@ inline int render(Model model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
     glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
     glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &model.ModelMatrix[0][0]);
-
+#if 1
+    GLuint Tex = loadDDS("assets/uvmap.DDS");
+#endif   
     // Bind texture in Texture Unit 0
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, model.Texture);
+	glBindTexture(GL_TEXTURE_2D, Tex);
 	//Set "myTextureSampler" sampler to use Texture Unit 0
 	glUniform1i(TextureID, 0);
 
@@ -365,15 +407,20 @@ inline int render(Model model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 
 inline void renderScene(Scene* scene)
 {
-    scene->player.camera.update();
     glUniformMatrix4fv(ViewMatrixID, 1, GL_FALSE, &scene->player.camera.ViewMatrix[0][0]);
 
     for(Model m : scene->contents)
     {
         error = render(m, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
     }
+
     for(Enemy e : scene->enemies)
     {
         error = render(e.model, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
     }
+    //error = render(scene->player.gun.model, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
+}
+inline void logCwd()
+{
+
 }

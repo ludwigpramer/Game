@@ -18,7 +18,7 @@ GLuint loadBMP_custom(const char * imagepath){
 	if (!file){
 		fprintf(stderr, "Error: %s could not be opened.!\n", imagepath);
 		getchar();
-		return -1;
+		return 0;
 	}
 
 	// Read the header, i.e. the 54 first bytes
@@ -27,17 +27,17 @@ GLuint loadBMP_custom(const char * imagepath){
 	if ( fread(header, 1, 54, file)!=54 ){ 
 		fprintf(stderr, "Error: Not a correct BMP file\n");
 		fclose(file);
-		return -1;
+		return 0;
 	}
 	// A BMP files always begins with "BM"
 	if ( header[0]!='B' || header[1]!='M' ){
 		fprintf(stderr, "Error: Not a correct BMP file\n");
 		fclose(file);
-		return -1;
+		return 0;
 	}
 	// Make sure this is a 24bpp file
-	if ( *(int*)&(header[0x1E])!=0  )         {printf("Not a correct BMP file\n");    fclose(file); return -1;}
-	if ( *(int*)&(header[0x1C])!=24 )         {printf("Not a correct BMP file\n");    fclose(file); return -1;}
+	if ( *(int*)&(header[0x1E])!=0  )         {printf("Not a correct BMP file\n");    fclose(file); return 0;}
+	if ( *(int*)&(header[0x1C])!=24 )         {printf("Not a correct BMP file\n");    fclose(file); return 0;}
 
 	// Read the information about the image
 	dataPos    = *(int*)&(header[0x0A]);
@@ -50,7 +50,7 @@ GLuint loadBMP_custom(const char * imagepath){
 	if (dataPos==0)      dataPos=54; // The BMP header is done that way
 
 	// Create a buffer
-	data = (unsigned char*) malloc( sizeof(unsigned char) * imageSize);
+	data = new unsigned char [imageSize];
 
 	// Read the actual data from the file into the buffer
 	fread(data,1,imageSize,file);
@@ -69,8 +69,11 @@ GLuint loadBMP_custom(const char * imagepath){
 	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
 
 	// OpenGL has now copied the data. Free our own version
-	free(data);
+	delete [] data;
 
+	// Poor filtering, or ...
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); 
 
 	// ... nice trilinear filtering ...
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -91,7 +94,7 @@ GLuint loadBMP_custom(const char * imagepath){
 #define FOURCC_DXT3 0x33545844 // Equivalent to "DXT3" in ASCII
 #define FOURCC_DXT5 0x35545844 // Equivalent to "DXT5" in ASCII
 
-int loadDDS(const char* imagepath, GLuint* Texture){
+GLuint loadDDS(const char * imagepath){
 
 	unsigned char header[124];
 
@@ -101,7 +104,7 @@ int loadDDS(const char* imagepath, GLuint* Texture){
 	fp = fopen(imagepath, "rb"); 
 	if (fp == NULL){
 		printf("%s could not be opened. Are you in the right directory ? Don't forget to read the FAQ !\n", imagepath); getchar(); 
-		return -1;
+		return 0;
 	}
    
 	/* verify the type of file */ 
@@ -109,7 +112,7 @@ int loadDDS(const char* imagepath, GLuint* Texture){
 	fread(filecode, 1, 4, fp); 
 	if (strncmp(filecode, "DDS ", 4) != 0) { 
 		fclose(fp); 
-		return -1; 
+		return 0; 
 	}
 	
 	/* get the surface desc */ 
@@ -146,7 +149,7 @@ int loadDDS(const char* imagepath, GLuint* Texture){
 		break; 
 	default: 
 		free(buffer); 
-		return -1; 
+		return 0; 
 	}
 
 	//Create one OpenGL texture
@@ -176,10 +179,10 @@ int loadDDS(const char* imagepath, GLuint* Texture){
 		if(height < 1) height = 1;
 
 	} 
-	*Texture = textureID;
+
 	free(buffer); 
 
-	return 0;
+	return textureID;
 
 
 }

@@ -16,9 +16,12 @@ class Enemy
      Model model;
      glm::vec3 position;
      glm::vec3 direction;
+     glm::vec3 velocity;
      public:
+     void update();
+     void setPos(glm::vec3 position);
+     void setRot(double alpha, double beta, double gamma);
      Enemy();
-     Enemy(glm::vec3 position, glm::vec3 direction);
      ~Enemy();
      
 };

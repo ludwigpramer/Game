@@ -4,13 +4,14 @@ Camera::Camera()
 {
      //default constructor
 }
-void Camera::update()
+void Camera::update(glm::vec3 position, glm::vec3 direction, glm::vec3 up, glm::mat4 ProjectionMatix, glm::mat4 ViewMatrix)
 {
-     computeMatricesFromInputs();
-     this->ProjectionMatrix = getProjectionMatrix();
-     this->ViewMatrix = getViewMatrix();
-     this->position = getPositionVector();
-     this->direction = getDirectionVector();
+     this->position = position;
+     this->direction = direction;
+     this->up = up;
+     this->ProjectionMatrix = ProjectionMatix;
+     this->ViewMatrix = ViewMatrix;
+     
 }
 Camera::~Camera()
 {

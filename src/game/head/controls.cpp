@@ -2,46 +2,34 @@
 
 extern GLFWwindow* window;
 extern FILE* logFile;
+extern int error;
+extern GLFWmonitor* primaryMonitor;
+extern const GLFWvidmode* mode;
 
 
-void logVec3(const char* name, glm::vec3 l)
+Controller::Controller()
 {
-     printf("%s %f %f %f\n", name, l.x, l.y, l.z);
+
+}
+
+Controller::~Controller()
+{
+
 }
 
 
-glm::mat4 ViewMatrix;
-
-glm::mat4 ProjectionMatrix;
-
-glm::vec3 position = CAMERA_STARTING_POS;
-
-glm::vec3 direction;
-
-int mouseBound = MOUSE_BOUND;
-
-float horizontalAngle = 90.0f;
-
-float verticalAngle = 0.0f;
-
-float initialFoV = 45.0f;
-
-float speed = BASE_SPEED;
-
-float mouseSpeed = MOUSE_SPEED;
-
-double lastTime;
-
-void computeMatricesFromInputs()
+void Controller::update(int* windowFullscreen)
 {
-    
      double currentTime= glfwGetTime();
      float deltaTime = float(currentTime - lastTime);
      lastTime = currentTime;
+     //the field of view
+     float FoV = NORMAL_FOV;
 
      double xpos, ypos;
      if(mouseBound)
      {
+     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	glfwGetCursorPos(window, &xpos, &ypos);
 	//Compute orientation
 	horizontalAngle += mouseSpeed * float(WINDOW_WIDTH/2 - xpos );
@@ -51,6 +39,10 @@ void computeMatricesFromInputs()
 	glfwSetCursorPos(window, WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
 
      //printf("%d\n", horizontalAngle);
+     }
+     else
+     {
+          glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
      }
      //direction vector
 	direction = glm::vec3(
@@ -67,37 +59,37 @@ void computeMatricesFromInputs()
           cos(horizontalAngle - 3.14f/2.0f)
      );
 
-     glm::vec3 up = glm::cross(right, direction);
-     //move forward
-     if (glfwGetKey(window, GLFW_KEY_W ) == GLFW_PRESS)
+     up = glm::cross(right, direction);
+     //move forwards
+     if (glfwGetKey(window, GLFW_KEY_W ) == GLFW_PRESS && !cameraBound)
      {
           position += normalize(glm::vec3(direction.x, 0.0f, direction.z)) * deltaTime * speed;
      }
-     //move backward
-     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+     //move backwards
+     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS && !cameraBound)
      {
           position -= normalize(glm::vec3(direction.x, 0.0f, direction.z)) * deltaTime * speed;
      }
      //move right
-     if (glfwGetKey(window, GLFW_KEY_D ) == GLFW_PRESS)
+     if (glfwGetKey(window, GLFW_KEY_D ) == GLFW_PRESS && !cameraBound)
      {
           position += normalize(right) * deltaTime * speed;
      }
      //move left
-     if (glfwGetKey(window, GLFW_KEY_A ) == GLFW_PRESS)
+     if (glfwGetKey(window, GLFW_KEY_A ) == GLFW_PRESS && !cameraBound)
      {
           position -= normalize(right) * deltaTime * speed;
      }
-     if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+     if(glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS && !cameraBound)
      {
           position.y -= deltaTime * speed;
      }
-
-     if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+     //move up
+     if(glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS && !cameraBound)
      {
           position.y += deltaTime * speed;
      }
-
+     //speed
      if(glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
      {
           speed = BOOST_SPEED;
@@ -105,19 +97,66 @@ void computeMatricesFromInputs()
      {
           speed = BASE_SPEED;
      }
-     if(glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
+     //unbind mouse
+     if(glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS && mouseBound)
      {
           mouseBound = 0;
      }
+     //bind mouse
      if(glfwGetKey(window, GLFW_KEY_BACKSPACE) == GLFW_PRESS && !mouseBound)
      {
           mouseBound = 1;
           glfwSetCursorPos(window, WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
      }
+     //shoot
+     if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_1)  == GLFW_PRESS)
+     {
+          printf("Shoot!!!\n");
+     }
+     if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2) == GLFW_PRESS)
+     {
+
+          FoV = SCOPE_FOV;
+          
+     } else
+     {
+
+          FoV = NORMAL_FOV;
+     }
+     if(glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+     {
+
+          cameraBound = 0;
+     }
+     if(glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
+     {
+
+          cameraBound = 1;
+     }
+     if(glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS)
+     {
+          printf("ScreenSizeFunc\n");
+          if(!*windowFullscreen)
+          {
+               glfwSetWindowMonitor(window, primaryMonitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+               glfwSetCursorPos(window, mode->width/2, mode->height/2);
+               *windowFullscreen = 1;
+               printf("Fullscreen\n");
+          }
+     }
+     if(glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS)
+     {
+          if(*windowFullscreen)
+          {
+               glfwSetWindowMonitor(window, NULL, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, GLFW_DONT_CARE);
+               glfwSetCursorPos(window, WINDOW_WIDTH/2, WINDOW_HEIGHT/2);
+               *windowFullscreen = 0;
+               printf("UNFullscreen\n");
+          }
+     }
   
 
-     //compute FoV
-     float FoV = initialFoV;
+
      #ifdef LOGCONTROLS
      printf(
           "%s %f %f %f %s %f %f %f %s %f %f %s %s %f %s %f \n",
@@ -152,20 +191,24 @@ void computeMatricesFromInputs()
 
 }
 
-glm::mat4 getProjectionMatrix()
+glm::mat4 Controller::getProjectionMatrix()
 {
      return ProjectionMatrix;
 }
 
-glm::mat4 getViewMatrix()
+glm::mat4 Controller::getViewMatrix()
 {
      return ViewMatrix;
 }
-glm::vec3 getPostionVector()
+glm::vec3 Controller::getPositionVector()
 {
      return position;
 }
-glm::vec3 getDirectionVector()
+glm::vec3 Controller::getDirectionVector()
 {
      return direction;
+}
+glm::vec3 Controller::getUpVector()
+{
+     return up;
 }

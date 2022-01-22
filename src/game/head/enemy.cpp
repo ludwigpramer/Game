@@ -1,13 +1,23 @@
 #include "enemy.hpp"
 
-Enemy::Enemy()
+void Enemy::update()
 {
-     //default contructor
+
 }
-Enemy::Enemy(glm::vec3 position, glm::vec3 direction)
+void Enemy::setPos(glm::vec3 position)
 {
      this->position = position;
-     this->direction = direction;
+     model.setPos(position);
+}
+void Enemy::setRot(double alpha, double beta, double gamma)
+{
+     model.setRot(alpha, beta, gamma);
+}
+Enemy::Enemy()
+{
+     model = Model("assets/uvmap1.DDS", "assets/cube.obj");
+     position = glm::vec3(0.0f);
+     model.setPos(position);
 }
 Enemy::~Enemy()
 {

@@ -11,12 +11,15 @@
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
-
+#include "renderingHead/matrices.hpp"
+#include "args.hpp"
 
 //Define the WindowConstants
 #define WINDOW_WIDTH 1024
 #define WINDOW_HEIGHT 768
 #define WINDOW_TITLE "TEST"
+
+#define BACKGROUND_COLOR 0.0f, 1.0f, 1.0f, 0.9f
 
 //define the ControllConstants
 #define BASE_SPEED 3.0f
@@ -24,11 +27,27 @@
 #define MOUSE_SPEED 0.005f
 #define MOUSE_BOUND 0
 
+#define NORMAL_FOV 45
+#define SCOPE_FOV 20
+
+//define the Path contants
+#define GUN_TEXTURE_PATH "assets/uvmap.DDS"
+#define GUN_OBJ_PATH "assets/gun.obj"
+
 //define the GameConstants
 #define CAMERA_STARTING_POS glm::vec3(0, 0, 5)
 #define PLAYER_STARTING_POS CAMERA_STARTING_POS
 #define CAMERA_STARTING_DIRECTION glm::vec3(0, 0, 1)
 #define PLAYER_STARTING_DIRECTION CAMERA_STARTING_DIRECTION
+
+#define G_UP glm::vec3(0, 1, 0)
+#define G_DOWN -G_UP
+#define G_RIGHT glm::vec3(0, 0, 1)
+#define G_LEFT -G_RIGHT
+#define G_FORWARDS glm::vec3(1, 0, 0)
+#define G_BACKWARDS -G_FORWARDS
+
+#define ENEMY_STARTING_COUNT 2
 
 
 //define the logging and LoggingControll constants
@@ -37,12 +56,20 @@
 #define LOG_FILE_MODE "w"
 #define logFps(x) printf("%d fps\n", x)
 #define logMspf(x) printf("%f ms/frame\n", 1000.0/double(x))
+#define logVec3(name, l) printf("%s %f %f %f\n", name, l.x, l.y, l.z)
+
 #else
 #define LOG_CONTROLS
 #define LOG_FILE_MODE "w"
 #define logFps(x) printf("%d fps\n", x)
 #define logMspf(x) printf("%f ms/frame\n", 1000.0/double(x))
 #endif
+
+
+
+#ifdef LOG_POSITIONS
+
+#endif 
 
 //The temporary color buffer data
 const GLfloat g_color_buffer_data[] = {
@@ -83,5 +110,6 @@ const GLfloat g_color_buffer_data[] = {
      0.820f,  0.883f,  0.371f,
      0.982f,  0.099f,  0.879f
 };
+
 
 #endif
