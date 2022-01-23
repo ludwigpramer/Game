@@ -13,7 +13,8 @@ Model::Model(const char* texturepath, const char* objpath)
      ModelMatrix = IDENTITY_MATRIX;
 
      //load the texture
-     Texture = loadDDS(texturepath); //loadDDS("imgs/uvmap.DDS");
+     GLuint T = load(texturepath);
+     Texture = &T;
      if(error != 0)
      {
           fprintf(stderr, "Error: Failed to load Texture: Exit code%d\n", error);
@@ -43,5 +44,5 @@ void Model::setRot(double alpha, double beta, double gamma)
 
 Model::~Model()
 {
-     	glDeleteTextures(1, &Texture);
+     	glDeleteTextures(1, Texture);
 }

@@ -1,6 +1,10 @@
+#ifndef _LUDWIGPRAMER_
+#error "Compile as LUDWIGPRAMER"
+#endif
 #include "game/game.hpp"
 #include "constants.hpp"
 #include "args.hpp"
+
 
 
 extern int miscFlag;

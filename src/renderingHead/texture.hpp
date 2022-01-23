@@ -10,11 +10,16 @@
 
 #include "../constants.hpp"
 
-//Load a .BMP file
-GLuint loadBMP(const char * imagepath);
+typedef enum IMG_TYPE
+{
+     DDS,
+     BMP
+}IMG_TYPE;
 
-//Load .DDS file
-GLuint loadDDS(const char * imagepath);
+//Load a .BMP file
+GLuint load(const char * imagepath);
+GLuint loadBMP(const char* imagepath);
+GLuint loadDDS(const char* imagepath);
 
 
 #endif

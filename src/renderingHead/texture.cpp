@@ -1,10 +1,27 @@
 #include "texture.hpp"
 
 
-GLuint loadBMP_custom(const char * imagepath){
+GLuint load(const char* imagepath)
+{
+	if(strstr(imagepath, ".DDS") != NULL)
+	{
+		printf("Loading DDS: %s\n", imagepath);
+		return loadDDS(imagepath);
+	}
+	else if(strstr(imagepath, ".bmp") != NULL)
+	{
+		printf("Loading BMP: %s\n", imagepath);
+		return loadBMP(imagepath);
+	}
+	else
+	{
+		fprintf(stderr, "Filetype of %s can not be used!\n", imagepath);
+		return 0;
+	}
+}
 
-	printf("Reading image %s\n", imagepath);
-
+GLuint loadBMP(const char * imagepath)
+{
 	// Data read from the header of the BMP file
 	unsigned char header[54];
 	unsigned int dataPos;

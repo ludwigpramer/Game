@@ -33,9 +33,9 @@ public:
      glm::vec3 position;
      glm::mat4 ModelMatrix;
 
-     //The mesh data
-     GLuint Texture;
+     GLuint* Texture;
 
+     //The mesh data
      std::vector<glm::vec3> vertices;
      std::vector<glm::vec2> uvs;
      std::vector<glm::vec3> normals;

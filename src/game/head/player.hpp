@@ -34,7 +34,7 @@ class Player
      Controller controller;
 
      Camera camera;
-     Gun gun;
+     //TODO REMOVEGun gun;
      Ray sight;
      SimpleBoxCollider collider;
 

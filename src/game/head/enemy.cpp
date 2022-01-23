@@ -15,7 +15,7 @@ void Enemy::setRot(double alpha, double beta, double gamma)
 }
 Enemy::Enemy()
 {
-     model = Model("assets/uvmap1.DDS", "assets/cube.obj");
+     model = Model("assets/uvmap.DDS", "assets/cube.obj");
      position = glm::vec3(0.0f);
      model.setPos(position);
 }

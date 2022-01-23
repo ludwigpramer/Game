@@ -29,7 +29,6 @@ Scene::Scene()
 
 Scene::Scene(Player player)
 {
-     this->contents = std::vector<Model>();
      this->player = player;
 }
 
@@ -41,5 +40,5 @@ Scene::Scene(std::vector<Model> contents, Player player)
 
 Scene::~Scene()
 {
-     //default contructor
+     //default decontructor
 }

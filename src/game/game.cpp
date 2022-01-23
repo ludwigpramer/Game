@@ -72,7 +72,7 @@ void loadBuffers(
     std::vector<glm::vec3> indexed_normals);
     
 void renderScene(Scene* scene);
-int render(Model model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix);
+int render(Model* model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix);
 
 //void logCwd();
 
@@ -124,13 +124,18 @@ int Game(void)
     ModelMatrixID = glGetUniformLocation(program, "M");
 
 
-    
+    printf("Before Texture loading\n");
     Player player;
+    printf("Between Player and Scene creation\n");
     Scene scene = Scene(player);
+    printf("After scene loading\n");
     //Make model
-    Model monkey("assets/uvmap.DDS", "assets/suzanne.obj");
+    Model monkey(TESTING_TEXTURE, "assets/suzanne.obj");
+    printf("After Model creation\n");
     monkey.ModelMatrix = glm::translate(IDENTITY_MATRIX, glm::vec3(10.0f, 0.0f, 0.0f)) * getRotationMatrix(170, 0, 0);
     scene.add(monkey);
+
+    printf("Before Enemy creation\n");
     //Test enemy
     Enemy enemy;
     enemy.setPos(glm::vec3(5.0f, 0.0f, 0.0f));  
@@ -324,32 +329,33 @@ void loadBuffers(
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW); 
 }
 
-inline int render(Model model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
+inline int render(Model* model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
 {
     loadBuffers(
     &vertexbuffer,
     &uvbuffer,
     &normalbuffer,
     &elementbuffer,
-    model.indices,
-    model.indexed_vertices,
-    model.indexed_uvs,
-    model.indexed_normals);
+    model->indices,
+    model->indexed_vertices,
+    model->indexed_uvs,
+    model->indexed_normals);
 
     ////render////
 	   
-    glm::mat4 MVP = ProjectionMatrix * ViewMatrix * model.ModelMatrix;
+    glm::mat4 MVP = ProjectionMatrix * ViewMatrix * model->ModelMatrix;
 
 
     glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 
-    glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &model.ModelMatrix[0][0]);
-#if 1
-    GLuint Tex = loadDDS("assets/uvmap.DDS");
-#endif   
+    glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &model->ModelMatrix[0][0]);
+
+
+    //TODO REMOVE
+    printf("Texture ID: %u LOC: %p\n", *model->Texture, model->Texture);
     // Bind texture in Texture Unit 0
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, Tex);
+	glBindTexture(GL_TEXTURE_2D, *model->Texture);
 	//Set "myTextureSampler" sampler to use Texture Unit 0
 	glUniform1i(TextureID, 0);
 
@@ -396,12 +402,11 @@ inline int render(Model model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementbuffer);
         
     //draw the triangles
-    glDrawElements( GL_TRIANGLES, (GLsizei) model.indices.size(), GL_UNSIGNED_SHORT, (void*)0);
+    glDrawElements( GL_TRIANGLES, (GLsizei) model->indices.size(), GL_UNSIGNED_SHORT, (void*)0);
     //diable the buffers
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
-
     return 0;
 }
 
@@ -411,12 +416,12 @@ inline void renderScene(Scene* scene)
 
     for(Model m : scene->contents)
     {
-        error = render(m, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
+        error = render(&m, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
     }
 
     for(Enemy e : scene->enemies)
     {
-        error = render(e.model, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
+        error = render(&e.model, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
     }
     //error = render(scene->player.gun.model, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
 }

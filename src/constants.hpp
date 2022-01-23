@@ -49,6 +49,8 @@
 
 #define ENEMY_STARTING_COUNT 2
 
+#define TESTING_TEXTURE "assets/uvtemplate.bmp"
+
 
 //define the logging and LoggingControll constants
 #ifdef DEBUG
