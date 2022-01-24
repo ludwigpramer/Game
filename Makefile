@@ -11,8 +11,9 @@ GAME= src/game/game.cpp src/game/head/controls.cpp src/game/head/model.cpp src/g
 ARGS= src/args.cpp
 MAIN= src/main.cpp 
 MLIBFOLDER= -L./libs/macos
-wLIBFOLDER= -L./libs/win32
-
+WLIBFOLDER32= -L./libs/win32
+CROSSCOMPILERFLAGSWIN32= -target i686-pc-win32 -fms-compatibility-version=19 -fms-extensions -fdelayed-template-parsing -fexceptions -mthread-model posix -fno-threadsafe-statics -Wno-msvc-not-found -DWIN32 -D_WIN32 -D_MT -D_DLL -Xclang -disable-llvm-verifier -Xclang '--dependent-lib=msvcrt' -Xclang '--dependent-lib=ucrt' -Xclang '--dependent-lib=oldnames' -Xclang '--dependent-lib=vcruntime' -D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE -U__GNUC__ -U__gnu_linux__ -U__GNUC_MINOR__ -U__GNUC_PATCHLEVEL__ -U__GNUC_STDC_INLINE__ 
+INCLUDESWIN32= -I/usr/local/Cellar/llvm/5.0.0/include -I/c/Program\ Files\ (x86)/Microsoft\ Visual\ Studio/2017/Community/VC/Tools/MSVC/14.11.25503/include -I/c/Program\ Files\ (x86)/Windows\ Kits/10/Include/10.0.15063.0/ucrt -I/c/Program\ Files\ (x86)/Windows\ Kits/10/Include/10.0.15063.0/shared -I/c/Program\ Files\ (x86)/Windows\ Kits/10/Include/10.0.15063.0/winrt
 
 
 
@@ -44,4 +45,6 @@ runTestingFiles:
 
 testTestingFiles: testingFiles runTestingFiles
 
+WIN32:
+	$(CC) $(CFLAGS) $(DEBUGCFLAGS) $(EXTRACFLAGS) $(CROSSCOMPILERFLAGSWIN32) $(INCLUDESWIN32) -o $(WIN32OUT) $(MAIN) $(ARGS) $(GAME) $(DEPENDENCIES) $(WLIBFOLDER32) $(LIBS)
 
