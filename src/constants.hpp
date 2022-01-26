@@ -1,8 +1,6 @@
 #ifndef _CONSTS
 #define _CONSTS
 
-#include <unistd.h>
-#include <sys/stat.h>
 #include <stdint.h>
 
 #include <stdio.h>

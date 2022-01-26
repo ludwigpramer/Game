@@ -93,6 +93,7 @@ static GLuint ModelMatrixID;
 
 int Game(void)
 {
+#ifndef WIN
     //Print debugging info
     char cwd[PATH_MAX];
     if (getcwd(cwd, sizeof(cwd)) != NULL) {
@@ -103,6 +104,7 @@ int Game(void)
         perror("getcwd() error");
         exit(1);
     }
+#endif
     GLuint program;
 
     error = InitAll();
