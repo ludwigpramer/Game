@@ -50,6 +50,7 @@
 #define TESTING_TEXTURE "assets/uvtemplate.bmp"
 
 
+
 //define the logging and LoggingControll constants
 #ifdef DEBUG
 #define LOG_CONTROLS
@@ -64,12 +65,6 @@
 #define logFps(x) printf("%d fps\n", x)
 #define logMspf(x) printf("%f ms/frame\n", 1000.0/double(x))
 #endif
-
-
-
-#ifdef LOG_POSITIONS
-
-#endif 
 
 //The temporary color buffer data
 const GLfloat g_color_buffer_data[] = {

@@ -15,7 +15,6 @@
 
 #include "../../renderingHead/objloader.hpp"
 #include "../../renderingHead/vboindexing.hpp"
-#include "../../renderingHead/objloader.hpp"
 #include "../../renderingHead/texture.hpp"
 #include "../../renderingHead/shader.hpp"
 
@@ -35,6 +34,10 @@ public:
 
      GLuint* Texture;
 
+     //the shader data
+
+     GLuint program;
+     
      //The mesh data
      std::vector<glm::vec3> vertices;
      std::vector<glm::vec2> uvs;

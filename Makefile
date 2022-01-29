@@ -5,7 +5,7 @@ DEBUGCFLAGS= -Wall -Wextra -Wpedantic -D DEBUG -D LOG_POSITIONS -D _LUDWIGPRAMER
 EXTRACFLAGS= -g -v
 LIBS= -lglfw3 -lGLEW
 OUTPUT= bin/app
-DEPENDENCIES= src/renderingHead/shader.cpp src/renderingHead/texture.cpp  src/renderingHead/objloader.cpp  src/renderingHead/vboindexing.cpp src/renderingHead/matrices.cpp src/renderingHead/vectors.cpp
+DEPENDENCIES= src/renderingHead/shader.cpp src/renderingHead/texture.cpp  src/renderingHead/objloader.cpp  src/renderingHead/vboindexing.cpp src/renderingHead/matrices.cpp src/renderingHead/vectors.cpp src/renderingHead/line.cpp
 GAME= src/game/game.cpp src/game/head/controls.cpp src/game/head/model.cpp src/game/head/scene.cpp src/game/head/gun/gun.cpp src/game/head/collider/collider.cpp src/game/head/player.cpp src/game/head/camera.cpp src/game/head/enemy.cpp src/game/head/raycast.cpp
 ARGS= src/args.cpp
 MAIN= src/main.cpp 
@@ -43,10 +43,10 @@ testTestingFiles: testingFiles runTestingFiles
 
 
 WIN32CC= x86_64-w64-mingw32-g++
-WIN32CFLAGS= -D _LUDWIGPRAMER_ -D WIN
+WIN32CFLAGS= -D _LUDWIGPRAMER_ -D __WIN32
 WIN32LIBFOLDER= -L./libs/win32
 WIN32OUT= bin/win32App.exe
-WIN32LIBS= -lGLEW -lglfw3
+WIN32LIBS= -lglew32 -lglfw3
 WIN32INCLUDE= -I include
 
 win32: $(MAIN) $(DEPENDENCIES)

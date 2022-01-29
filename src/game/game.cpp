@@ -11,6 +11,16 @@
 #include <vector>
 #include <array>
 
+#ifndef __WIN32
+#include <sys/stat.h>
+#include <unistd.h>
+#else
+#include <windows.h>
+#endif
+
+
+
+
 #include "game.hpp"
 
 #include "../constants.hpp"
@@ -22,11 +32,14 @@
 #include "../renderingHead/texture.hpp"
 #include "../renderingHead/objloader.hpp"
 
+#include "../renderingHead/line.hpp"
+
 #include "head/controls.hpp"
 #include "head/model.hpp"
 #include "head/scene.hpp"
 #include "head/collider/collider.hpp"
 #include "head/gun/gun.hpp"
+
 
 #define LOG
 
@@ -55,10 +68,6 @@ int windowFullScreen;
 
 GLFWmonitor* primaryMonitor;
 
-
-
-GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path);
-
 void GenVao(GLuint* id);
 int InitAll();
 void loadBuffers(
@@ -73,8 +82,6 @@ void loadBuffers(
     
 void renderScene(Scene* scene);
 int render(Model* model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix);
-
-//void logCwd();
 
 static GLuint vertexbuffer;
 static GLuint uvbuffer;
@@ -93,7 +100,6 @@ static GLuint ModelMatrixID;
 
 int Game(void)
 {
-#ifndef WIN
     //Print debugging info
     char cwd[PATH_MAX];
     if (getcwd(cwd, sizeof(cwd)) != NULL) {
@@ -104,8 +110,8 @@ int Game(void)
         perror("getcwd() error");
         exit(1);
     }
-#endif
     GLuint program;
+
 
     error = InitAll();
 
@@ -352,9 +358,6 @@ inline int render(Model* model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix
 
     glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &model->ModelMatrix[0][0]);
 
-
-    //TODO REMOVE
-    printf("Texture ID: %u LOC: %p\n", *model->Texture, model->Texture);
     // Bind texture in Texture Unit 0
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, *model->Texture);
@@ -427,7 +430,13 @@ inline void renderScene(Scene* scene)
     }
     //error = render(scene->player.gun.model, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
 }
-inline void logCwd()
-{
 
+inline void renderLine(Line* line)
+{
+    glUseProgram(line->shaderProgram);
+    glUniformMatrix4fv(glGetUniformLocation(line->shaderProgram, "MVP"), 1, GL_FALSE, &line->MVP[0][0]);
+    glUniform3fv(glGetUniformLocation(line->shaderProgram, "color"), 1, &line->lineColor[0]);
+
+    glBindVertexArray(line->VAO);
+    glDrawArrays(GL_LINES, 0, 2);
 }
