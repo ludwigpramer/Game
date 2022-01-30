@@ -1,4 +1,6 @@
 #include "enemy.hpp"
+#include "../../renderingHead/cube.hpp"
+#include "../../renderingHead/vboindexing.hpp"
 
 void Enemy::update()
 {
@@ -15,7 +17,13 @@ void Enemy::setRot(double alpha, double beta, double gamma)
 }
 Enemy::Enemy()
 {
-     model = Model("assets/uvmap.DDS", "assets/cube.obj");
+     model.vertices = cub_vertices;
+     model.uvs = cub_uvs;
+     model.normals = cub_normals;
+     indexVBO(model.vertices, model.uvs, model.normals, model.indexed_vertices, model.indexed_uvs, model.indexed_normals, model.indices);
+
+     model.setTexture("assets/uvmap.DDS");
+
      position = glm::vec3(0.0f);
      model.setPos(position);
 }

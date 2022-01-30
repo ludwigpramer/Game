@@ -11,7 +11,7 @@
 
 #include "../../constants.hpp"
 
-#include "model.hpp"
+#include "../../renderingHead/model.hpp"
 #include "player.hpp"
 #include "enemy.hpp"
 
@@ -21,6 +21,7 @@ class Scene
      std::vector<Model> contents;
      std::vector<Enemy> enemies;
      Player player;
+     Model ground;
 
      public:
      void add(Model model);

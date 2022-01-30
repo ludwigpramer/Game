@@ -8,7 +8,8 @@
 #include <glm/glm.hpp>
 
 #include "../../constants.hpp"
-#include "model.hpp"
+#include "../../renderingHead/model.hpp"
+
 
 class Enemy
 {

@@ -46,6 +46,7 @@
 #define G_BACKWARDS -G_FORWARDS
 
 #define ENEMY_STARTING_COUNT 2
+#define ENEMY_TEXTURE "assets/uvmap.DDS"
 
 #define TESTING_TEXTURE "assets/uvtemplate.bmp"
 

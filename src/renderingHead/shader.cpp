@@ -97,3 +97,44 @@ GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path
 }
 
 
+
+ShaderProgram::ShaderProgram()
+{
+	//Default contructor
+}
+ShaderProgram::ShaderProgram(const char* vertexfilepath, const char* fragmentfilepath)
+{
+	program = LoadShaders(vertexfilepath, fragmentfilepath);
+}
+ShaderProgram::ShaderProgram(GLuint program)
+{
+	this->program = program;
+}
+ShaderProgram::~ShaderProgram()
+{
+	glDeleteShader(program);
+}
+void ShaderProgram::use()
+{
+	glUseProgram(program);
+}
+GLuint ShaderProgram::getUniformLocation(const char* name)
+{
+	return glGetUniformLocation(program, name);
+}
+void ShaderProgram::bindMatrixID()
+{
+	this->MatrixID = glGetUniformLocation(program, "MVP");
+}
+void ShaderProgram::bindViewMatrixID()
+{
+	this->ViewMatrixID = glGetUniformLocation(program, "V");
+}
+void ShaderProgram::bindModelMatrixID()
+{
+	this->ModelMatrixID = glGetUniformLocation(program, "M");
+}
+void ShaderProgram::bindTextureID()
+{
+	this->TextureID = glGetUniformLocation(program, "myTextureSampler");
+}

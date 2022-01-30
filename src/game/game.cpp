@@ -21,14 +21,15 @@
 #include "../renderingHead/shader.hpp"
 #include "../renderingHead/texture.hpp"
 #include "../renderingHead/objloader.hpp"
+#include "../renderingHead/model.hpp"
+#include "head/scene.hpp"
+#include "head/gun.hpp"
+
 
 #include "head/controls.hpp"
-#include "head/model.hpp"
-#include "head/scene.hpp"
-#include "head/collider/collider.hpp"
-#include "head/gun/gun.hpp"
+#include "head/collider.hpp"
 
-#define LOG
+
 
 #ifdef DEBUG
 #define lg printf("Log Point %d\n", i); i++
@@ -55,24 +56,12 @@ int windowFullScreen;
 
 GLFWmonitor* primaryMonitor;
 
-
-
-GLuint LoadShaders(const char* vertex_file_path, const char* fragment_file_path);
-
 void GenVao(GLuint* id);
 int InitAll();
-void loadBuffers(
-    GLuint* vertexbuffer,
-    GLuint* uvbuffer,
-    GLuint* normalbuffer,
-    GLuint* elementbuffer,
-    std::vector<unsigned short> indices,
-    std::vector<glm::vec3> indexed_vertices,
-    std::vector<glm::vec2> indexed_uvs,
-    std::vector<glm::vec3> indexed_normals);
-    
+void loadBuffers(GLuint* vertexbuffer, GLuint* uvbuffer, GLuint* normalbuffer, GLuint* elementbuffer, std::vector<unsigned short> indices, std::vector<glm::vec3> indexed_vertices, std::vector<glm::vec2> indexed_uvs, std::vector<glm::vec3> indexed_normals);
 void renderScene(Scene* scene);
 int render(Model* model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix);
+void applyAmbientLightFactorOf(Model model);
 
 //void logCwd();
 
@@ -85,6 +74,8 @@ static GLuint VertexArrayID;
 static GLuint TextureID;
 static GLuint LightID;
 
+static GLuint AmbientLightFactorID;
+
 static GLuint MatrixID;
 static GLuint ViewMatrixID;
 static GLuint ModelMatrixID;
@@ -93,7 +84,7 @@ static GLuint ModelMatrixID;
 
 int Game(void)
 {
-#ifndef WIN
+
     //Print debugging info
     char cwd[PATH_MAX];
     if (getcwd(cwd, sizeof(cwd)) != NULL) {
@@ -104,8 +95,7 @@ int Game(void)
         perror("getcwd() error");
         exit(1);
     }
-#endif
-    GLuint program;
+
 
     error = InitAll();
 
@@ -117,47 +107,48 @@ int Game(void)
     //Generate Vao
     GenVao(&VertexArrayID);
     
-    program = LoadShaders("src/renderingHead/Shaders/ShadingVertexShader.vs", "src/renderingHead/Shaders/ShadingFragmentShader.fs");
-    
+    ShaderProgram program = ShaderProgram("src/renderingHead/Shaders/ShadingVertexShaderG.vs", "src/renderingHead/Shaders/ShadingFragmentShaderG.fs");
+   
 
     // Get a handle for  "MVP" uniform
-	MatrixID = glGetUniformLocation(program, "MVP");
-    ViewMatrixID = glGetUniformLocation(program, "V");
-    ModelMatrixID = glGetUniformLocation(program, "M");
+    MatrixID = program.getUniformLocation("MVP");
+    ViewMatrixID = program.getUniformLocation("V");
+    ModelMatrixID = program.getUniformLocation("M");
 
+    program.bindMatrixID();
+    program.bindViewMatrixID();
+    program.bindModelMatrixID();
 
-    printf("Before Texture loading\n");
     Player player;
-    printf("Between Player and Scene creation\n");
     Scene scene = Scene(player);
-    printf("After scene loading\n");
-    //Make model
-    Model monkey(TESTING_TEXTURE, "assets/suzanne.obj");
-    printf("After Model creation\n");
+    
+
+    //Make TestingModel
+    Model monkey("assets/uvmap.DDS", "assets/suzanne.obj");
     monkey.ModelMatrix = glm::translate(IDENTITY_MATRIX, glm::vec3(10.0f, 0.0f, 0.0f)) * getRotationMatrix(170, 0, 0);
     scene.add(monkey);
 
-    printf("Before Enemy creation\n");
-    //Test enemy
+    //Test Enemy
     Enemy enemy;
     enemy.setPos(glm::vec3(5.0f, 0.0f, 0.0f));  
     scene.add(enemy);
 
-
-    
+    Model plane("assets/uvmap.DDS", "assets/ground.obj");
+    plane.ModelMatrix = glm::scale(glm::translate(IDENTITY_MATRIX, glm::vec3(0.0f, 0.0f, 0.0f)) * getRotationMatrix(0, 0, 0), glm::vec3(100.0f, 0.0f, 100.0f));
+    plane.setAmbientLightFactor(0.5f);
+    scene.ground = plane;
 
     // Get a handle for  "myTextureSampler" uniform
-	TextureID  = glGetUniformLocation(program, "myTextureSampler");
+    TextureID = program.getUniformLocation("myTextureSampler");
     
- 
-
     //Will later be removed
     GLuint colorbuffer;  
     glGenBuffers(1, &colorbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(g_color_buffer_data), g_color_buffer_data, GL_STATIC_DRAW);
 
-    LightID = glGetUniformLocation(program, "LightPosition_worldspace");
+    LightID = program.getUniformLocation("LightPosition_worldspace");
+    AmbientLightFactorID = program.getUniformLocation("AmbientLightFactor");
     
     //printf("PlayerPos:%f %f %f MonkeyPos:%f %f %f ObjPos: %f %f %f \n", scene.player.position.x, scene.player.position.y, scene.player.position.z, monkey.position.x, monkey.position.y, monkey.position.z, 0.0f, 0.0f, 0.0f);
     double lastTime;
@@ -182,15 +173,11 @@ int Game(void)
         //clear the displaye
         glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-	    //Use the shaders
-        glUseProgram(program);
+        program.use();
         
         glm::vec3 lightPos = glm::vec3(4, 4, 4);
         glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.y);
 
-       
-        
-        
         //render(monkey, ProjectionMatrix, ViewMatrix);
         scene.update(&windowFullScreen);
         renderScene(&scene);
@@ -215,7 +202,6 @@ int Game(void)
 	glDeleteBuffers(1, &uvbuffer);
     glDeleteBuffers(1, &normalbuffer);
     glDeleteBuffers(1, &elementbuffer);
-	glDeleteProgram(program);
 	glDeleteVertexArrays(1, &VertexArrayID);
 
     //terminate glfw and close the window
@@ -354,7 +340,7 @@ inline int render(Model* model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix
 
 
     //TODO REMOVE
-    printf("Texture ID: %u LOC: %p\n", *model->Texture, model->Texture);
+    // printf("Texture ID: %u LOC: %p\n", *model->Texture, model->Texture);
     // Bind texture in Texture Unit 0
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, *model->Texture);
@@ -418,16 +404,21 @@ inline void renderScene(Scene* scene)
 
     for(Model m : scene->contents)
     {
+        applyAmbientLightFactorOf(m);
         error = render(&m, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
     }
 
     for(Enemy e : scene->enemies)
     {
+        applyAmbientLightFactorOf(e.model);
         error = render(&e.model, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
     }
     //error = render(scene->player.gun.model, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
+    applyAmbientLightFactorOf(scene->ground);
+    error = render(&scene->ground, scene->player.camera.ProjectionMatrix, scene->player.camera.ViewMatrix);
 }
-inline void logCwd()
-{
 
+void applyAmbientLightFactorOf(Model model)
+{
+    glUniform3f(AmbientLightFactorID, model.ambientLightFactor.x, model.ambientLightFactor.y, model.ambientLightFactor.z);
 }

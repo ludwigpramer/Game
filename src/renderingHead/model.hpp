@@ -11,13 +11,13 @@
 
 #include <glm/glm.hpp>
 
-#include "../../constants.hpp"
+#include "../constants.hpp"
 
-#include "../../renderingHead/objloader.hpp"
-#include "../../renderingHead/vboindexing.hpp"
-#include "../../renderingHead/objloader.hpp"
-#include "../../renderingHead/texture.hpp"
-#include "../../renderingHead/shader.hpp"
+#include "objloader.hpp"
+#include "vboindexing.hpp"
+#include "objloader.hpp"
+#include "texture.hpp"
+#include "shader.hpp"
 
 
 extern int error;
@@ -44,12 +44,19 @@ public:
      std::vector<glm::vec3> indexed_vertices;
      std::vector<glm::vec2> indexed_uvs;
      std::vector<glm::vec3> indexed_normals;
+
+     glm::vec3 ambientLightFactor;
 public:
      Model();
      Model(const char* texturepath, const char* objpath);
      Model(const char* texturepath, const char* objpath, glm::vec3 position);
      void setPos(glm::vec3 position);
      void setRot(double alpha, double beta, double gamma);
+     void setTexture(const char* texturepath);
+     void setTexture(GLuint Texture);
+     void setAmbientLightFactor(float factor);
+     void setAmbientLightFactor(glm::vec3 factor);
+     
      ~Model();
 };
 

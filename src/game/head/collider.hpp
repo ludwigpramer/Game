@@ -7,8 +7,8 @@
 
 #include <glm/glm.hpp>
 
-#include "../../../constants.hpp"
-#include "../raycast.hpp"
+#include "../../constants.hpp"
+#include "raycast.hpp"
 
 
 class SimpleBoxCollider

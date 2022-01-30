@@ -8,11 +8,11 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
-#include "../../../constants.hpp"
+#include "../../constants.hpp"
 
-#include "../model.hpp"
-#include "../controls.hpp"
-#include "../../../renderingHead/matrices.hpp"
+#include "../../renderingHead/model.hpp"
+#include "controls.hpp"
+#include "../../renderingHead/matrices.hpp"
 
 class Gun
 {    

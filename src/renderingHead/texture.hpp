@@ -16,7 +16,7 @@ typedef enum IMG_TYPE
      BMP
 }IMG_TYPE;
 
-//Load a .BMP file
+//Load a Texture(.bmp or .DDS)
 GLuint load(const char * imagepath);
 GLuint loadBMP(const char* imagepath);
 GLuint loadDDS(const char* imagepath);

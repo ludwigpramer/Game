@@ -14,9 +14,9 @@
 
 #include "../../constants.hpp"
 #include "camera.hpp"
-#include "gun/gun.hpp"
+#include "gun.hpp"
 #include "raycast.hpp"
-#include "collider/collider.hpp"
+#include "collider.hpp"
 
 
 extern GLFWwindow* window;
