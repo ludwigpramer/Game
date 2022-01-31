@@ -1,11 +1,13 @@
+!<arch>
+Makefile        1643636957  501   20    100644  2019      `
 CC= clang++
 FRAMEWORKS= -framework Cocoa -framework OpenGL -framework IOKit
 CFLAGS= -std=c++17
 DEBUGCFLAGS= -Wall -Wextra -Wpedantic -D DEBUG -D LOG_POSITIONS -D _LUDWIGPRAMER_
 EXTRACFLAGS= -g -v
-LIBS= -lglfw3 -lGLEW
+LIBS= -llglib -lglfw3 -lGLEW
 OUTPUT= bin/app
-DEPENDENCIES= src/renderingHead/shader.cpp src/renderingHead/texture.cpp  src/renderingHead/objloader.cpp  src/renderingHead/vboindexing.cpp src/renderingHead/matrices.cpp  src/renderingHead/model.cpp src/renderingHead/line.cpp src/renderingHead/text.cpp
+DEPENDENCIES= src/renderingHead/shader.o src/renderingHead/texture.o  src/renderingHead/objloader.o  src/renderingHead/vboindexing.o src/renderingHead/matrices.o  src/renderingHead/model.o src/renderingHead/line.o src/renderingHead/text.o
 GAME= src/game/game.cpp src/game/head/controls.cpp src/game/head/scene.cpp src/game/head/gun.cpp src/game/head/collider.cpp src/game/head/player.cpp src/game/head/camera.cpp src/game/head/enemy.cpp src/game/head/raycast.cpp src/game/head/ground.cpp
 ARGS= src/args.cpp
 MAIN= src/main.cpp 
@@ -31,6 +33,13 @@ cleanup:
 run:
 	./bin/app
 
+macos: libs $(MAIN) $(GAME)
+	$(CC) $(CFLAGS) $(DEBUGCFLAGS) -o $(OUTPUT) $(MAIN) $(ARGS) $(GAME)$(MLIBFOLDER) $(LIBS) $(FRAMEWORKS)
+lib: $(DEPENDENCIES)
+
+.c.o:
+    $(CC) $(CFLAGS) $(DEBUGCFLAGS) -c -o $@ $<
+
 
 
 WIN32CC= x86_64-w64-mingw32-g++
@@ -45,6 +54,8 @@ win32: $(MAIN) $(DEPENDENCIES)
 
 
 
+
+
 testingFiles:
 	$(CC) $(CFLAGS) $(DEBUGCFLAGS) -o bin/test test/Test.cpp $(ARGS) $(GAME) $(DEPENDENCIES) $(MLIBFOLDER) $(LIBS) $(FRAMEWORKS)
 
@@ -52,3 +63,4 @@ runTestingFiles:
 	./bin/test
 
 testTestingFiles: testingFiles runTestingFiles
+

@@ -135,8 +135,8 @@ GLuint loadDDS(const char * imagepath){
 	/* get the surface desc */ 
 	fread(&header, 124, 1, fp); 
 
-	unsigned int height      = *(unsigned int*)&(header[8 ]);
-	unsigned int width	     = *(unsigned int*)&(header[12]);
+	unsigned int height = *(unsigned int*)&(header[8]);
+	unsigned int width = *(unsigned int*)&(header[12]);
 	unsigned int linearSize	 = *(unsigned int*)&(header[16]);
 	unsigned int mipMapCount = *(unsigned int*)&(header[24]);
 	unsigned int fourCC      = *(unsigned int*)&(header[80]);
@@ -146,7 +146,7 @@ GLuint loadDDS(const char * imagepath){
 	unsigned int bufsize;
 	/* how big is it going to be including all mipmaps? */ 
 	bufsize = mipMapCount > 1 ? linearSize * 2 : linearSize; 
-	buffer = (unsigned char*)malloc(bufsize * sizeof(unsigned char)); 
+	buffer = new unsigned char[bufsize];
 	fread(buffer, 1, bufsize, fp); 
 	/* close the file pointer */ 
 	fclose(fp);
@@ -165,7 +165,7 @@ GLuint loadDDS(const char * imagepath){
 		format = GL_COMPRESSED_RGBA_S3TC_DXT5_EXT; 
 		break; 
 	default: 
-		free(buffer); 
+		delete[] buffer; 
 		return 0; 
 	}
 
@@ -197,7 +197,7 @@ GLuint loadDDS(const char * imagepath){
 
 	} 
 
-	free(buffer); 
+	delete[] buffer;
 
 	return textureID;
 

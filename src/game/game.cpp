@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <stdbool.h>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -22,6 +21,7 @@
 #include "../renderingHead/texture.hpp"
 #include "../renderingHead/objloader.hpp"
 #include "../renderingHead/model.hpp"
+#include "../renderingHead/text.hpp"
 #include "head/scene.hpp"
 #include "head/gun.hpp"
 
@@ -109,6 +109,7 @@ int Game(void)
     
     ShaderProgram program = ShaderProgram("src/renderingHead/Shaders/ShadingVertexShaderG.vs", "src/renderingHead/Shaders/ShadingFragmentShaderG.fs");
    
+    //initialize the textrenderer
 
     // Get a handle for  "MVP" uniform
     MatrixID = program.getUniformLocation("MVP");
@@ -125,12 +126,12 @@ int Game(void)
 
     //Make TestingModel
     Model monkey("assets/uvmap.DDS", "assets/suzanne.obj");
-    monkey.ModelMatrix = glm::translate(IDENTITY_MATRIX, glm::vec3(10.0f, 0.0f, 0.0f)) * getRotationMatrix(170, 0, 0);
+    monkey.ModelMatrix = glm::translate(IDENTITY_MATRIX, glm::vec3(10.0f, 1.0f, 0.0f)) * getRotationMatrix(170, 0, 0);
     scene.add(monkey);
 
     //Test Enemy
     Enemy enemy;
-    enemy.setPos(glm::vec3(5.0f, 0.0f, 0.0f));  
+    enemy.setPos(glm::vec3(5.0f, 1.0f, 0.0f));  
     scene.add(enemy);
 
     Model plane("assets/uvmap.DDS", "assets/ground.obj");
@@ -140,7 +141,8 @@ int Game(void)
 
     // Get a handle for  "myTextureSampler" uniform
     TextureID = program.getUniformLocation("myTextureSampler");
-    
+ 
+    initText("assets/Holstein.DDS");
     //Will later be removed
     GLuint colorbuffer;  
     glGenBuffers(1, &colorbuffer);
@@ -153,6 +155,7 @@ int Game(void)
     //printf("PlayerPos:%f %f %f MonkeyPos:%f %f %f ObjPos: %f %f %f \n", scene.player.position.x, scene.player.position.y, scene.player.position.z, monkey.position.x, monkey.position.y, monkey.position.z, 0.0f, 0.0f, 0.0f);
     double lastTime;
     int frames;
+    char fpsC[256];
     lastTime = glfwGetTime();
     frames = 0;
     glfwSetTime(0.0f);
@@ -165,6 +168,7 @@ int Game(void)
         if(currentTime - lastTime >= 1.0f)
         {
             logFps(frames);
+            sprintf(fpsC, "%d fps", frames);
             frames = 0;
             lastTime += 1.0f;
             //printf("PlayerPos:%f %f %f GunPos:%f %f %f ObjPos: %f %f %f \n", scene.player.position.x, scene.player.position.y, scene.player.position.z, monkey.position.x, monkey.position.y, monkey.position.z, 0.0f, 0.0f, 0.0f);
@@ -175,7 +179,7 @@ int Game(void)
         
         program.use();
         
-        glm::vec3 lightPos = glm::vec3(4, 4, 4);
+        glm::vec3 lightPos = glm::vec3(4, 5, 4);
         glUniform3f(LightID, lightPos.x, lightPos.y, lightPos.y);
 
         //render(monkey, ProjectionMatrix, ViewMatrix);
@@ -185,6 +189,9 @@ int Game(void)
         {
             fprintf(stderr, "Error: Failed in the rendering Method: ErrorCode %d\n", error);
         }
+        glBindTexture(TextureID, 0);
+        printText(fpsC, 10, 500, 40);
+        glBindTexture(TextureID, 0);
 
         //Update Display
         glfwSwapBuffers(window);
@@ -203,7 +210,7 @@ int Game(void)
     glDeleteBuffers(1, &normalbuffer);
     glDeleteBuffers(1, &elementbuffer);
 	glDeleteVertexArrays(1, &VertexArrayID);
-
+    cleanupText();
     //terminate glfw and close the window
     glfwTerminate();
 
@@ -284,7 +291,7 @@ inline int InitAll()
         fprintf(stderr, "Error: Failed to open LogFile.\n");
         return -1;
     }
-
+   
     return 0;
 }  
 
@@ -395,6 +402,8 @@ inline int render(Model* model, glm::mat4 ProjectionMatrix, glm::mat4 ViewMatrix
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
+
+    glBindTexture(TextureID, 0);
     return 0;
 }
 

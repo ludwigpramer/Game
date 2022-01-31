@@ -4,15 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
 #include <glm/glm.hpp>
-
-#include "../constants.hpp"
-
-extern int error;
-extern GLFWwindow* window;
 
 //the spectial matrices
 #define IDENTITY_MATRIX glm::mat4(1.0f)

@@ -8,13 +8,11 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "../constants.hpp"
-
-typedef enum IMG_TYPE
+enum IMG_TYPE
 {
      DDS,
      BMP
-}IMG_TYPE;
+};
 
 //Load a Texture(.bmp or .DDS)
 GLuint load(const char * imagepath);

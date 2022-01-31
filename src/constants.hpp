@@ -33,7 +33,7 @@
 #define GUN_OBJ_PATH "assets/gun.obj"
 
 //define the GameConstants
-#define CAMERA_STARTING_POS glm::vec3(0, 0, 5)
+#define CAMERA_STARTING_POS glm::vec3(0.0f, 1.0f, 5.0f)
 #define PLAYER_STARTING_POS CAMERA_STARTING_POS
 #define CAMERA_STARTING_DIRECTION glm::vec3(0, 0, 1)
 #define PLAYER_STARTING_DIRECTION CAMERA_STARTING_DIRECTION
@@ -50,6 +50,7 @@
 
 #define TESTING_TEXTURE "assets/uvtemplate.bmp"
 
+#define TEXT_TEXTURE "assets/text.DDS"
 
 //define the logging and LoggingControll constants
 #ifdef DEBUG

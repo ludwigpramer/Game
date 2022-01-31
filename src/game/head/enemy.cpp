@@ -4,7 +4,7 @@
 
 void Enemy::update()
 {
-
+     //The update method
 }
 void Enemy::setPos(glm::vec3 position)
 {
@@ -24,7 +24,7 @@ Enemy::Enemy()
 
      model.setTexture("assets/uvmap.DDS");
 
-     position = glm::vec3(0.0f);
+     position = glm::vec3(0.0f, 1.0f, 0.0f);
      model.setPos(position);
 }
 Enemy::~Enemy()

@@ -10,7 +10,4 @@
 
 #include <glm/glm.hpp>
 
-#include "../constants.hpp"
-
-
 #endif

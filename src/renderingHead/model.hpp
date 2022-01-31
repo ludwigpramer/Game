@@ -11,13 +11,13 @@
 
 #include <glm/glm.hpp>
 
-#include "../constants.hpp"
 
 #include "objloader.hpp"
 #include "vboindexing.hpp"
 #include "objloader.hpp"
 #include "texture.hpp"
 #include "shader.hpp"
+#include "matrices.hpp"
 
 
 extern int error;

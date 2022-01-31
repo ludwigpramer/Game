@@ -20,7 +20,6 @@
 
 #include <GL/glew.h>
 
-#include "../constants.hpp"
 
 
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path);
